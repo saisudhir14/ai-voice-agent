@@ -5,7 +5,10 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
-    TanStackRouterVite(),
+    TanStackRouterVite({
+      autoCodeSplitting: true,
+      generatedRouteTree: './src/routeTree.gen.ts',
+    }),
     react(),
   ],
   resolve: {
@@ -24,6 +27,9 @@ export default defineConfig({
         target: 'ws://localhost:8080',
         ws: true,
       },
+    },
+    hmr: {
+      overlay: true,
     },
   },
 })
