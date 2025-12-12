@@ -2,6 +2,7 @@ package assemblyai
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -74,8 +75,10 @@ func (c *Client) Stream(ctx context.Context, audioIn <-chan []byte) (<-chan Tran
 					return
 				}
 
+				// AssemblyAI expects base64 encoded audio data
+				audioBase64 := base64.StdEncoding.EncodeToString(audio)
 				msg := map[string]interface{}{
-					"audio_data": audio,
+					"audio_data": audioBase64,
 				}
 				if err := conn.WriteJSON(msg); err != nil {
 					log.Warn().Err(err).Msg("Failed to send audio to AssemblyAI")

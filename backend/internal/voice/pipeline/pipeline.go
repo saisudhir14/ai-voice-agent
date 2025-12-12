@@ -2,6 +2,7 @@ package pipeline
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"sync"
 	"time"
@@ -484,8 +485,10 @@ func (p *VoicePipeline) sendAudioToClient(session *Session, ttsIn <-chan []byte)
 				return
 			}
 
+			// Base64 encode audio for JSON transmission
+			audioBase64 := base64.StdEncoding.EncodeToString(audio)
 			session.sendEvent(EventTTSChunk, map[string]interface{}{
-				"audio": audio,
+				"audio": audioBase64,
 			})
 		}
 	}
