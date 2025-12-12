@@ -1,0 +1,7 @@
+// Barrel export for shared components
+export * from "./page-header"
+export * from "./empty-state"
+export * from "./form-field"
+export * from "./loading"
+export * from "./confirm-dialog"
+export * from "./stat-card"
