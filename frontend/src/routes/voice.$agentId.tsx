@@ -48,8 +48,10 @@ export function VoicePage() {
   const mediaStreamRef = useRef<MediaStream | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const processorRef = useRef<ScriptProcessorNode | null>(null)
+  const playbackContextRef = useRef<AudioContext | null>(null)
   const audioQueueRef = useRef<ArrayBuffer[]>([])
   const isPlayingRef = useRef(false)
+  const agentResponseRef = useRef<string>('')
 
   useEffect(() => {
     const fetchAgent = async () => {
@@ -156,6 +158,16 @@ export function VoicePage() {
       processorRef.current = null
     }
 
+    if (playbackContextRef.current) {
+      playbackContextRef.current.close()
+      playbackContextRef.current = null
+    }
+
+    // Clear audio queue and agent response
+    audioQueueRef.current = []
+    isPlayingRef.current = false
+    agentResponseRef.current = ''
+
     reset()
   }
 
@@ -184,6 +196,17 @@ export function VoicePage() {
 
       case 'agent_chunk':
         setStatus('speaking')
+        // Accumulate agent response text
+        const chunkText = (event.data?.text as string) || ''
+        agentResponseRef.current += chunkText
+        break
+
+      case 'agent_end':
+        // Add the complete agent message to chat
+        if (agentResponseRef.current) {
+          addMessage({ role: 'assistant', content: agentResponseRef.current, timestamp: event.timestamp })
+          agentResponseRef.current = ''
+        }
         break
 
       case 'tts_chunk':
@@ -195,7 +218,9 @@ export function VoicePage() {
         break
 
       case 'error':
-        setError((event.data?.message as string) || 'An error occurred')
+        const errorMessage = (event.data?.message as string) || 'An error occurred'
+        console.error('Voice error:', errorMessage, event.data)
+        setError(errorMessage)
         break
 
       case 'session_end':
@@ -217,7 +242,13 @@ export function VoicePage() {
     if (isPlayingRef.current || audioQueueRef.current.length === 0) return
     
     isPlayingRef.current = true
-    const playbackContext = new AudioContext({ sampleRate: 24000 })
+    
+    // Use persistent playback context with high quality sample rate
+    if (!playbackContextRef.current || playbackContextRef.current.state === 'closed') {
+      playbackContextRef.current = new AudioContext({ sampleRate: 44100 })
+    }
+    
+    const playbackContext = playbackContextRef.current
 
     while (audioQueueRef.current.length > 0) {
       const audioData = audioQueueRef.current.shift()!
@@ -230,7 +261,7 @@ export function VoicePage() {
           float32Array[i] = int16Array[i] / 32768
         }
         
-        const audioBuffer = playbackContext.createBuffer(1, float32Array.length, 24000)
+        const audioBuffer = playbackContext.createBuffer(1, float32Array.length, 44100)
         audioBuffer.getChannelData(0).set(float32Array)
         
         const source = playbackContext.createBufferSource()
@@ -248,14 +279,18 @@ export function VoicePage() {
 
     isPlayingRef.current = false
     setStatus('ready')
-    playbackContext.close()
   }
 
   const toggleMute = () => {
     setMuted(!isMuted)
   }
 
+  const { error } = useVoiceStore()
+  
   const getStatusText = (status: VoiceStatus) => {
+    if (status === 'error' && error) {
+      return error
+    }
     const statusMap: Record<VoiceStatus, string> = {
       idle: 'Ready to connect',
       connecting: 'Connecting...',

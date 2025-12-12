@@ -325,7 +325,7 @@ func (s *AgentService) Create(userID uuid.UUID, input CreateAgentInput) (*models
 		agent.VoiceID = "a0e99841-438c-4a64-b679-ae501e7d6091"
 	}
 	if agent.LLMModel == "" {
-		agent.LLMModel = "claude-3-haiku-20240307"
+		agent.LLMModel = "gpt-4o-mini"
 	}
 	if agent.Temperature == 0 {
 		agent.Temperature = 0.7

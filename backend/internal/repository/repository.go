@@ -106,14 +106,36 @@ func (r *AgentRepository) Create(agent *models.Agent) error {
 
 func (r *AgentRepository) GetByID(id uuid.UUID) (*models.Agent, error) {
 	var agent models.Agent
-	err := r.db.Preload("Industry").First(&agent, "id = ?", id).Error
-	return &agent, err
+	err := r.db.First(&agent, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+	// Load Industry using hook pattern
+	r.loadAgentRelations(&agent)
+	return &agent, nil
 }
 
 func (r *AgentRepository) ListByUserID(userID uuid.UUID) ([]models.Agent, error) {
 	var agents []models.Agent
-	err := r.db.Preload("Industry").Where("user_id = ?", userID).Order("created_at DESC").Find(&agents).Error
-	return agents, err
+	err := r.db.Where("user_id = ?", userID).Order("created_at DESC").Find(&agents).Error
+	if err != nil {
+		return nil, err
+	}
+	// Load Industry for each agent
+	for i := range agents {
+		r.loadAgentRelations(&agents[i])
+	}
+	return agents, nil
+}
+
+// loadAgentRelations loads related entities for an agent
+func (r *AgentRepository) loadAgentRelations(agent *models.Agent) {
+	if agent.IndustryID != uuid.Nil {
+		r.db.First(&agent.Industry, "id = ?", agent.IndustryID)
+	}
+	if agent.UserID != uuid.Nil {
+		r.db.First(&agent.User, "id = ?", agent.UserID)
+	}
 }
 
 func (r *AgentRepository) Update(agent *models.Agent) error {
@@ -121,7 +143,12 @@ func (r *AgentRepository) Update(agent *models.Agent) error {
 }
 
 func (r *AgentRepository) Delete(id uuid.UUID) error {
-	return r.db.Delete(&models.Agent{}, "id = ?", id).Error
+	// BeforeDelete hook will handle cascade
+	var agent models.Agent
+	if err := r.db.First(&agent, "id = ?", id).Error; err != nil {
+		return err
+	}
+	return r.db.Delete(&agent).Error
 }
 
 func (r *AgentRepository) CountByUserID(userID uuid.UUID) (int64, error) {
@@ -146,14 +173,40 @@ func (r *ConversationRepository) Create(conversation *models.Conversation) error
 
 func (r *ConversationRepository) GetByID(id uuid.UUID) (*models.Conversation, error) {
 	var conversation models.Conversation
-	err := r.db.Preload("Messages").Preload("Agent").First(&conversation, "id = ?", id).Error
-	return &conversation, err
+	err := r.db.First(&conversation, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+	// Load relations using hooks pattern
+	r.loadConversationRelations(&conversation, true)
+	return &conversation, nil
 }
 
 func (r *ConversationRepository) GetBySessionID(sessionID string) (*models.Conversation, error) {
 	var conversation models.Conversation
-	err := r.db.Preload("Messages").First(&conversation, "session_id = ?", sessionID).Error
-	return &conversation, err
+	err := r.db.First(&conversation, "session_id = ?", sessionID).Error
+	if err != nil {
+		return nil, err
+	}
+	// Load messages
+	r.loadConversationRelations(&conversation, true)
+	return &conversation, nil
+}
+
+// loadConversationRelations loads related entities for a conversation
+func (r *ConversationRepository) loadConversationRelations(conv *models.Conversation, includeMessages bool) {
+	// Load Agent
+	if conv.AgentID != uuid.Nil {
+		r.db.First(&conv.Agent, "id = ?", conv.AgentID)
+		// Also load agent's industry
+		if conv.Agent.IndustryID != uuid.Nil {
+			r.db.First(&conv.Agent.Industry, "id = ?", conv.Agent.IndustryID)
+		}
+	}
+	// Load Messages if requested
+	if includeMessages {
+		r.db.Where("conversation_id = ?", conv.ID).Order("start_time ASC").Find(&conv.Messages)
+	}
 }
 
 func (r *ConversationRepository) ListByAgentID(agentID uuid.UUID, limit, offset int) ([]models.Conversation, error) {
@@ -170,12 +223,18 @@ func (r *ConversationRepository) ListByUserID(userID uuid.UUID, limit, offset in
 	var conversations []models.Conversation
 	err := r.db.Joins("JOIN agents ON agents.id = conversations.agent_id").
 		Where("agents.user_id = ?", userID).
-		Preload("Agent").
-		Order("started_at DESC").
+		Order("conversations.started_at DESC").
 		Limit(limit).
 		Offset(offset).
 		Find(&conversations).Error
-	return conversations, err
+	if err != nil {
+		return nil, err
+	}
+	// Load Agent for each conversation
+	for i := range conversations {
+		r.loadConversationRelations(&conversations[i], false)
+	}
+	return conversations, nil
 }
 
 func (r *ConversationRepository) Update(conversation *models.Conversation) error {
@@ -183,7 +242,12 @@ func (r *ConversationRepository) Update(conversation *models.Conversation) error
 }
 
 func (r *ConversationRepository) Delete(id uuid.UUID) error {
-	return r.db.Delete(&models.Conversation{}, "id = ?", id).Error
+	// BeforeDelete hook will handle cascade delete of messages
+	var conversation models.Conversation
+	if err := r.db.First(&conversation, "id = ?", id).Error; err != nil {
+		return err
+	}
+	return r.db.Delete(&conversation).Error
 }
 
 // ==================== Message Repository ====================

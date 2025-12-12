@@ -2,10 +2,10 @@ package assemblyai
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"sync"
+	"sync/atomic"
 
 	"github.com/gorilla/websocket"
 
@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	realtimeURL = "wss://api.assemblyai.com/v2/realtime/ws"
+	// New v3 streaming endpoint (Universal-2 model)
+	realtimeURL = "wss://streaming.assemblyai.com/v3/ws"
 	sampleRate  = 16000
 )
 
@@ -42,51 +43,51 @@ func (c *Client) Stream(ctx context.Context, audioIn <-chan []byte) (<-chan Tran
 		return nil, fmt.Errorf("AssemblyAI API key not configured")
 	}
 
-	// Connect to AssemblyAI
-	url := fmt.Sprintf("%s?sample_rate=%d", realtimeURL, sampleRate)
-	header := map[string][]string{
-		"Authorization": {c.apiKey},
-	}
+	// Connect to AssemblyAI v3 streaming endpoint
+	url := fmt.Sprintf("%s?sample_rate=%d&encoding=pcm_s16le&token=%s", realtimeURL, sampleRate, c.apiKey)
 
-	conn, _, err := websocket.DefaultDialer.DialContext(ctx, url, header)
+	conn, _, err := websocket.DefaultDialer.DialContext(ctx, url, nil)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to connect to AssemblyAI")
 		return nil, fmt.Errorf("failed to connect to AssemblyAI: %w", err)
 	}
 
-	log.Debug().Msg("Connected to AssemblyAI")
+	log.Debug().Msg("Connected to AssemblyAI v3 streaming")
 
 	transcriptChan := make(chan TranscriptEvent, 10)
 
 	var wg sync.WaitGroup
 
-	// Goroutine to send audio
+	// Goroutine to send audio as raw binary
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		for {
 			select {
 			case <-ctx.Done():
-				conn.WriteJSON(map[string]bool{"terminate_session": true})
+				// Send termination message
+				terminateMsg := map[string]string{"type": "Terminate"}
+				conn.WriteJSON(terminateMsg)
 				return
 			case audio, ok := <-audioIn:
 				if !ok {
-					conn.WriteJSON(map[string]bool{"terminate_session": true})
+					// Send termination message
+					terminateMsg := map[string]string{"type": "Terminate"}
+					conn.WriteJSON(terminateMsg)
 					return
 				}
 
-				// AssemblyAI expects base64 encoded audio data
-				audioBase64 := base64.StdEncoding.EncodeToString(audio)
-				msg := map[string]interface{}{
-					"audio_data": audioBase64,
-				}
-				if err := conn.WriteJSON(msg); err != nil {
+				// Send raw binary audio data
+				if err := conn.WriteMessage(websocket.BinaryMessage, audio); err != nil {
 					log.Warn().Err(err).Msg("Failed to send audio to AssemblyAI")
 					return
 				}
 			}
 		}
 	}()
+
+	// Track if connection has failed to prevent repeated reads
+	var connFailed atomic.Bool
 
 	// Goroutine to receive transcripts
 	wg.Add(1)
@@ -95,62 +96,92 @@ func (c *Client) Stream(ctx context.Context, audioIn <-chan []byte) (<-chan Tran
 		defer close(transcriptChan)
 		defer conn.Close()
 
+		// Recover from any panics to prevent server crash
+		defer func() {
+			if r := recover(); r != nil {
+				log.Warn().Interface("panic", r).Msg("Recovered from panic in AssemblyAI receiver")
+			}
+		}()
+
 		for {
+			// Check if connection has already failed
+			if connFailed.Load() {
+				return
+			}
+
 			select {
 			case <-ctx.Done():
 				return
 			default:
 				_, message, err := conn.ReadMessage()
 				if err != nil {
+					connFailed.Store(true)
 					if websocket.IsUnexpectedCloseError(err) {
 						log.Debug().Err(err).Msg("AssemblyAI connection closed")
 					}
 					return
 				}
 
+				// Parse the v3 response format
 				var response struct {
-					MessageType string  `json:"message_type"`
-					Text        string  `json:"text"`
-					Confidence  float64 `json:"confidence"`
-					AudioStart  int     `json:"audio_start"`
-					AudioEnd    int     `json:"audio_end"`
+					Type       string  `json:"type"`
+					Transcript string  `json:"transcript"`
+					Text       string  `json:"text"`
+					EndOfTurn  bool    `json:"end_of_turn"`
+					Confidence float64 `json:"confidence"`
+					// SessionBegins fields
+					ID        string `json:"id"`
+					SessionID string `json:"session_id"`
+					ExpiresAt int64  `json:"expires_at"`
 				}
 
 				if err := json.Unmarshal(message, &response); err != nil {
+					log.Warn().Err(err).Str("raw", string(message)).Msg("Failed to parse AssemblyAI response")
 					continue
 				}
 
-				switch response.MessageType {
-				case "PartialTranscript":
-					if response.Text != "" {
-						select {
-						case transcriptChan <- TranscriptEvent{
-							Text:       response.Text,
-							IsPartial:  true,
-							Confidence: response.Confidence,
-						}:
-						case <-ctx.Done():
-							return
-						}
+				// Only log non-empty transcripts to reduce noise
+				if response.Transcript != "" || response.Type != "Turn" {
+					log.Debug().Str("type", response.Type).Str("text", response.Transcript).Bool("end_of_turn", response.EndOfTurn).Msg("AssemblyAI response")
+				}
+
+				switch response.Type {
+				case "SessionBegins", "Begin":
+					sessionID := response.SessionID
+					if sessionID == "" {
+						sessionID = response.ID
 					}
-				case "FinalTranscript":
-					if response.Text != "" {
-						log.Debug().
-							Str("text", response.Text).
-							Float64("confidence", response.Confidence).
-							Msg("Final transcript received")
+					log.Info().Str("session_id", sessionID).Msg("AssemblyAI session started")
+
+				case "Turn":
+					// This is a transcription result
+					text := response.Transcript
+					if text == "" {
+						text = response.Text
+					}
+
+					if text != "" {
+						event := TranscriptEvent{
+							Text:       text,
+							IsPartial:  !response.EndOfTurn,
+							Confidence: response.Confidence,
+						}
+
+						if response.EndOfTurn {
+							log.Debug().
+								Str("text", text).
+								Float64("confidence", response.Confidence).
+								Msg("Final transcript received")
+						}
 
 						select {
-						case transcriptChan <- TranscriptEvent{
-							Text:       response.Text,
-							IsPartial:  false,
-							Confidence: response.Confidence,
-						}:
+						case transcriptChan <- event:
 						case <-ctx.Done():
 							return
 						}
 					}
-				case "SessionTerminated":
+
+				case "Termination":
 					log.Debug().Msg("AssemblyAI session terminated")
 					return
 				}

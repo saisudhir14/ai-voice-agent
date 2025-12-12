@@ -5,7 +5,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -16,8 +18,8 @@ import (
 const (
 	websocketURL      = "wss://api.cartesia.ai/tts/websocket"
 	cartesiaVersion   = "2024-06-10"
-	defaultModel      = "sonic-english"
-	defaultSampleRate = 24000
+	defaultModel      = "sonic-3"
+	defaultSampleRate = 44100 // High quality audio
 )
 
 // Client handles Cartesia TTS streaming
@@ -58,103 +60,96 @@ func (c *Client) Stream(ctx context.Context, textIn <-chan string, voiceID strin
 	log.Debug().Str("voice_id", voiceID).Msg("Connected to Cartesia")
 
 	audioChan := make(chan []byte, 100)
-	var wg sync.WaitGroup
-	var contextCounter int
-	var mu sync.Mutex
 
-	generateContextID := func() string {
-		mu.Lock()
-		defer mu.Unlock()
+	// Use a done channel to signal shutdown
+	done := make(chan struct{})
+	var doneOnce sync.Once
+	closeDone := func() {
+		doneOnce.Do(func() {
+			close(done)
+		})
+	}
+
+	// Track if connection has failed to prevent repeated reads/writes
+	var connFailed atomic.Bool
+
+	// Unique context ID for each request
+	contextCounter := 0
+	getContextID := func() string {
 		contextCounter++
 		return fmt.Sprintf("ctx_%d_%d", time.Now().UnixMilli(), contextCounter)
 	}
 
-	// Goroutine to send text
-	wg.Add(1)
+	// Goroutine to send text - buffer complete sentences
 	go func() {
-		defer wg.Done()
+		defer closeDone() // Signal receiver to stop when sender is done
 
-		var textBuffer string
-		ticker := time.NewTicker(100 * time.Millisecond)
-		defer ticker.Stop()
+		var textBuffer strings.Builder
+
+		sendBuffer := func() bool {
+			// Check if connection has failed before trying to send
+			if connFailed.Load() {
+				return false
+			}
+			text := strings.TrimSpace(textBuffer.String())
+			if text != "" {
+				ctxID := getContextID()
+				log.Debug().Str("text", text).Str("ctx", ctxID).Msg("Sending text to Cartesia")
+				if err := c.sendText(conn, text, voiceID, ctxID); err != nil {
+					log.Warn().Err(err).Msg("Failed to send text to Cartesia")
+					connFailed.Store(true)
+					return false
+				}
+				textBuffer.Reset()
+			}
+			return true
+		}
+
+		flushTicker := time.NewTicker(250 * time.Millisecond)
+		defer flushTicker.Stop()
 
 		for {
+			// Check if connection has failed
+			if connFailed.Load() {
+				return
+			}
+
 			select {
 			case <-ctx.Done():
+				sendBuffer()
 				return
+
 			case text, ok := <-textIn:
 				if !ok {
-					// Flush remaining text
-					if textBuffer != "" {
-						c.sendText(conn, textBuffer, voiceID, generateContextID())
-					}
-					return
-				}
-				textBuffer += text
-
-				// Send when we have enough text or hit a sentence boundary
-				if len(textBuffer) > 50 || containsSentenceEnd(textBuffer) {
-					c.sendText(conn, textBuffer, voiceID, generateContextID())
-					textBuffer = ""
-				}
-			case <-ticker.C:
-				// Flush buffer periodically
-				if textBuffer != "" {
-					c.sendText(conn, textBuffer, voiceID, generateContextID())
-					textBuffer = ""
-				}
-			}
-		}
-	}()
-
-	// Goroutine to receive audio
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		defer close(audioChan)
-		defer conn.Close()
-
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			default:
-				_, message, err := conn.ReadMessage()
-				if err != nil {
-					if websocket.IsUnexpectedCloseError(err) {
-						log.Debug().Err(err).Msg("Cartesia connection closed")
-					}
+					// Channel closed - flush remaining text
+					sendBuffer()
+					log.Debug().Msg("Text input complete")
+					// Wait a bit for audio to be generated
+					time.Sleep(500 * time.Millisecond)
 					return
 				}
 
-				var response struct {
-					Type      string `json:"type"`
-					Data      string `json:"data"`
-					Done      bool   `json:"done"`
-					ContextID string `json:"context_id"`
-					Error     string `json:"error"`
-				}
+				textBuffer.WriteString(text)
+				currentText := textBuffer.String()
 
-				if err := json.Unmarshal(message, &response); err != nil {
-					continue
-				}
-
-				if response.Error != "" {
-					log.Warn().Str("error", response.Error).Msg("Cartesia error")
-					continue
-				}
-
-				if response.Type == "chunk" && response.Data != "" {
-					// Decode base64 audio
-					audio, err := base64.StdEncoding.DecodeString(response.Data)
-					if err != nil {
-						log.Warn().Err(err).Msg("Failed to decode audio")
-						continue
+				// Send on complete sentences
+				if strings.HasSuffix(strings.TrimSpace(currentText), ".") ||
+					strings.HasSuffix(strings.TrimSpace(currentText), "!") ||
+					strings.HasSuffix(strings.TrimSpace(currentText), "?") {
+					if !sendBuffer() {
+						return
 					}
+				} else if len(currentText) > 120 {
+					// Send if buffer gets large
+					if !sendBuffer() {
+						return
+					}
+				}
 
-					select {
-					case audioChan <- audio:
-					case <-ctx.Done():
+			case <-flushTicker.C:
+				// Periodically flush incomplete sentences
+				if textBuffer.Len() > 0 {
+					if !sendBuffer() {
 						return
 					}
 				}
@@ -162,12 +157,105 @@ func (c *Client) Stream(ctx context.Context, textIn <-chan string, voiceID strin
 		}
 	}()
 
-	// Cleanup goroutine
+	// Goroutine to receive audio
 	go func() {
-		wg.Wait()
+		defer close(audioChan)
+		defer conn.Close()
+
+		// Recover from any panics to prevent server crash
+		defer func() {
+			if r := recover(); r != nil {
+				log.Warn().Interface("panic", r).Msg("Recovered from panic in Cartesia receiver")
+			}
+		}()
+
+		for {
+			// Check if connection has already failed
+			if connFailed.Load() {
+				return
+			}
+
+			select {
+			case <-ctx.Done():
+				return
+			case <-done:
+				// Sender is done, drain remaining messages with timeout
+				conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+				for {
+					if connFailed.Load() {
+						return
+					}
+					_, message, err := conn.ReadMessage()
+					if err != nil {
+						connFailed.Store(true)
+						return
+					}
+					c.processMessage(message, audioChan)
+				}
+			default:
+				// Normal read with short timeout
+				conn.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
+				_, message, err := conn.ReadMessage()
+				if err != nil {
+					// Check if it's just a timeout
+					if netErr, ok := err.(interface{ Timeout() bool }); ok && netErr.Timeout() {
+						continue
+					}
+					// Real error - mark connection as failed and exit
+					connFailed.Store(true)
+					// Check if done channel is closed
+					select {
+					case <-done:
+						// Sender finished, we're done
+						return
+					default:
+						// Unexpected error while sender is still active
+						log.Debug().Err(err).Msg("Cartesia read error")
+						return
+					}
+				}
+
+				c.processMessage(message, audioChan)
+			}
+		}
 	}()
 
 	return audioChan, nil
+}
+
+func (c *Client) processMessage(message []byte, audioChan chan<- []byte) {
+	log := logger.WithComponent("cartesia")
+	var response struct {
+		Type      string `json:"type"`
+		Data      string `json:"data"`
+		Done      bool   `json:"done"`
+		ContextID string `json:"context_id"`
+		Error     string `json:"error"`
+	}
+
+	if err := json.Unmarshal(message, &response); err != nil {
+		return
+	}
+
+	if response.Error != "" {
+		log.Warn().Str("error", response.Error).Msg("Cartesia error")
+		return
+	}
+
+	if response.Type == "chunk" && response.Data != "" {
+		// Decode base64 audio
+		audio, err := base64.StdEncoding.DecodeString(response.Data)
+		if err != nil {
+			log.Warn().Err(err).Msg("Failed to decode audio")
+			return
+		}
+
+		select {
+		case audioChan <- audio:
+		default:
+			// Channel full, skip
+		}
+	}
 }
 
 func (c *Client) sendText(conn *websocket.Conn, text, voiceID, contextID string) error {
@@ -192,17 +280,6 @@ func (c *Client) sendText(conn *websocket.Conn, text, voiceID, contextID string)
 	}
 
 	return conn.WriteJSON(payload)
-}
-
-func containsSentenceEnd(text string) bool {
-	for _, char := range []rune{'.', '!', '?', ',', ';', ':'} {
-		for _, r := range text {
-			if r == char {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 // SynthesizeSync performs synchronous TTS (for simple use cases)
