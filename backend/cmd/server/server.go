@@ -45,6 +45,11 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
 
+	// Seed industries (ensures default industries are available)
+	log.Info().Msg("Seeding default industries...")
+	database.SeedIndustries(db)
+	log.Info().Msg("Industries seeding completed")
+
 	// Initialize repositories
 	repos := repository.NewRepositories(db)
 

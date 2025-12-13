@@ -60,14 +60,12 @@ func Migrate(db *gorm.DB) error {
 		return err
 	}
 
-	// Seed default industries
-	seedIndustries(db)
-
 	log.Info().Msg("Database migrations completed")
 	return nil
 }
 
-func seedIndustries(db *gorm.DB) {
+// SeedIndustries seeds default industries into the database
+func SeedIndustries(db *gorm.DB) {
 	log := logger.WithComponent("database")
 
 	industries := []models.Industry{
