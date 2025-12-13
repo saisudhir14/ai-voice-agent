@@ -143,23 +143,44 @@ git clone https://github.com/saisudhir14/ai-voice-agent.git
 cd ai-voice-agent
 ```
 
-### Start the Backend
+### Start Both Backend and Frontend (Recommended)
 
+You can run both servers with a single command using any of these methods:
+
+**Option 1: Using npm (recommended)**
+```bash
+npm run dev
+```
+
+**Option 2: Using the shell script**
+```bash
+./dev.sh
+```
+
+**Option 3: Using Make**
+```bash
+make dev
+```
+
+### Start Individually
+
+**Backend only:**
 ```bash
 cd backend
 go mod download
-go run cmd/server/main.go
+go run cmd/server/server.go
 ```
 
-### Start the Frontend
-
+**Frontend only:**
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+The application will be available at:
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8080`
 
 ## Deployment
 

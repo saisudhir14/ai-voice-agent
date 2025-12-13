@@ -1,0 +1,17 @@
+{
+  "name": "ai-voice-agent",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && go run cmd/server/server.go",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && go build -o server ./cmd/server",
+    "build:frontend": "cd frontend && npm run build",
+    "seed": "cd backend && go run cmd/seed/seed.go"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
