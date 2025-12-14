@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { Mic, Zap, Shield, Globe, ArrowRight, Play } from 'lucide-react'
+import { Mic, Zap, Shield, Globe, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { AnimatedSection, AnimatedCard, GradientBackground, DemoWalkthrough } from '@/components/shared'
+import { AnimatedSection, AnimatedCard, GradientBackground } from '@/components/shared'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -47,11 +46,8 @@ const industries = [
 ]
 
 export function HomePage() {
-  const [isDemoOpen, setIsDemoOpen] = useState(false)
-
   return (
     <div className="relative overflow-hidden min-h-screen">
-      <DemoWalkthrough isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       {/* Enhanced Animated Background */}
       <GradientBackground intensity="medium" />
       
@@ -114,17 +110,6 @@ export function HomePage() {
                     Get Started Free
                     <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="secondary" 
-                  size="lg" 
-                  className="group"
-                  onClick={() => setIsDemoOpen(true)}
-                >
-                  <Play className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Watch Demo
                 </Button>
               </motion.div>
             </div>

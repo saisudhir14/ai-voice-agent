@@ -13,9 +13,9 @@ type Config struct {
 	DatabaseURL string
 
 	// Voice Services
-	AssemblyAIKey  string
-	CartesiaKey    string
-	CartesiaVoice  string
+	AssemblyAIKey string
+	CartesiaKey   string
+	CartesiaVoice string
 
 	// LLM (direct API - fallback)
 	AnthropicKey string
@@ -27,6 +27,9 @@ type Config struct {
 
 	// Auth
 	JWTSecret string
+
+	// Database Seeding
+	AutoSeed bool // Automatically seed database on server startup
 }
 
 func Load() *Config {
@@ -42,6 +45,7 @@ func Load() *Config {
 		LangChainServiceURL: getEnv("LANGCHAIN_SERVICE_URL", "http://localhost:8081"),
 		UseLangChain:        getEnv("USE_LANGCHAIN", "true") == "true",
 		JWTSecret:           getEnv("JWT_SECRET", "change-this-secret"),
+		AutoSeed:            getEnv("AUTO_SEED", "true") == "true", // Default to true for development
 	}
 }
 
@@ -59,4 +63,3 @@ func (c *Config) IsDevelopment() bool {
 func (c *Config) IsProduction() bool {
 	return c.Env == "production"
 }
-

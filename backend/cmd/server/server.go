@@ -45,10 +45,15 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to run migrations")
 	}
 
-	// Seed industries (ensures default industries are available)
-	log.Info().Msg("Seeding default industries...")
-	database.SeedIndustries(db)
-	log.Info().Msg("Industries seeding completed")
+	// Seed database if AUTO_SEED is enabled (default: true)
+	// In production, set AUTO_SEED=false and use the seed CLI tool instead
+	if cfg.AutoSeed {
+		log.Info().Msg("Auto-seeding database (AUTO_SEED=true)...")
+		database.SeedIndustries(db)
+		log.Info().Msg("Database seeding completed")
+	} else {
+		log.Info().Msg("Skipping auto-seed (AUTO_SEED=false). Use 'make seed' or 'go run cmd/seed/seed.go' to seed manually.")
+	}
 
 	// Initialize repositories
 	repos := repository.NewRepositories(db)
