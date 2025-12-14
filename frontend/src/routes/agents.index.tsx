@@ -42,7 +42,6 @@ export function AgentsIndexPage() {
       const response = await agentsApi.list()
       setAgents(response.data || [])
     } catch (error) {
-      console.error('Failed to fetch agents:', error)
       toast.error('Failed to load agents')
     } finally {
       setLoading(false)
@@ -55,7 +54,6 @@ export function AgentsIndexPage() {
       setAgents((prev) => prev.filter((a) => a.id !== id))
       toast.success('Agent deleted')
     } catch (error) {
-      console.error('Failed to delete agent:', error)
       toast.error('Failed to delete agent')
     }
   }

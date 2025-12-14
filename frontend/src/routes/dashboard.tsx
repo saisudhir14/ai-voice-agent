@@ -52,7 +52,7 @@ export function DashboardPage() {
         setAgents(agentsRes.data || [])
         setConversations(convsRes.data || [])
       } catch (error) {
-        console.error('Failed to fetch data:', error)
+        // Failed to fetch data
       } finally {
         setLoading(false)
       }

@@ -57,7 +57,6 @@ export function CreateAgentPage() {
         const response = await industriesApi.list()
         setIndustries(response.data || [])
       } catch (error) {
-        console.error('Failed to fetch industries:', error)
         toast.error('Failed to load industries')
       } finally {
         setLoading(false)

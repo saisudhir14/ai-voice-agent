@@ -49,6 +49,7 @@ export function VoicePage() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const processorRef = useRef<ScriptProcessorNode | null>(null)
   const playbackContextRef = useRef<AudioContext | null>(null)
+  const gainNodeRef = useRef<GainNode | null>(null)
   const audioQueueRef = useRef<ArrayBuffer[]>([])
   const isPlayingRef = useRef(false)
   const agentResponseRef = useRef<string>('')
@@ -59,7 +60,6 @@ export function VoicePage() {
         const response = await agentsApi.get(agentId)
         setAgent(response.data)
       } catch (error) {
-        console.error('Failed to fetch agent:', error)
         navigate({ to: '/agents' })
       } finally {
         setLoading(false)
@@ -75,6 +75,32 @@ export function VoicePage() {
   const connect = async () => {
     try {
       setStatus('connecting')
+
+      // Initialize playback AudioContext early and resume it (required for autoplay)
+      // This must happen on user interaction to work properly
+      if (!playbackContextRef.current || playbackContextRef.current.state === 'closed') {
+        playbackContextRef.current = new AudioContext({ sampleRate: 44100 })
+        // Create gain node for volume control
+        gainNodeRef.current = playbackContextRef.current.createGain()
+        gainNodeRef.current.gain.value = 1.0 // Full volume
+        gainNodeRef.current.connect(playbackContextRef.current.destination)
+      }
+      
+      // Resume AudioContext - this is critical for audio playback
+      if (playbackContextRef.current.state !== 'running') {
+        try {
+          await playbackContextRef.current.resume()
+        } catch (error) {
+          // AudioContext resume failed
+        }
+      }
+      
+      // Ensure gain node exists
+      if (!gainNodeRef.current && playbackContextRef.current) {
+        gainNodeRef.current = playbackContextRef.current.createGain()
+        gainNodeRef.current.gain.value = 1.0
+        gainNodeRef.current.connect(playbackContextRef.current.destination)
+      }
 
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
@@ -93,10 +119,37 @@ export function VoicePage() {
       const ws = new WebSocket(`${WS_URL}/ws/voice/${agentId}`)
       wsRef.current = ws
 
-      ws.onopen = () => {
-        console.log('WebSocket connected to:', `${WS_URL}/ws/voice/${agentId}`)
+      ws.onopen = async () => {
         setConnected(true)
         setStatus('ready')
+        
+        // Ensure AudioContext is running before we start processing
+        if (playbackContextRef.current && playbackContextRef.current.state !== 'running') {
+          try {
+            await playbackContextRef.current.resume()
+            
+            // Test audio playback with a short beep to verify it works
+            if (gainNodeRef.current) {
+              const testDuration = 0.1 // 100ms
+              const testFrequency = 440 // A4 note
+              const sampleRate = playbackContextRef.current.sampleRate
+              const numSamples = Math.floor(testDuration * sampleRate)
+              const buffer = playbackContextRef.current.createBuffer(1, numSamples, sampleRate)
+              const data = buffer.getChannelData(0)
+              
+              for (let i = 0; i < numSamples; i++) {
+                data[i] = Math.sin(2 * Math.PI * testFrequency * i / sampleRate) * 0.1 // 10% volume
+              }
+              
+              const source = playbackContextRef.current.createBufferSource()
+              source.buffer = buffer
+              source.connect(gainNodeRef.current)
+              source.start(0)
+            }
+          } catch (err) {
+            // AudioContext resume failed
+          }
+        }
         
         processorRef.current!.onaudioprocess = (e) => {
           if (isMuted || ws.readyState !== WebSocket.OPEN) return
@@ -117,12 +170,15 @@ export function VoicePage() {
       }
 
       ws.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        handleVoiceEvent(data)
+        try {
+          const data = JSON.parse(event.data)
+          handleVoiceEvent(data)
+        } catch (error) {
+          // Failed to parse WebSocket message
+        }
       }
 
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error)
         setError('Connection error')
       }
 
@@ -132,7 +188,6 @@ export function VoicePage() {
       }
 
     } catch (error) {
-      console.error('Failed to connect:', error)
       setError('Failed to access microphone')
     }
   }
@@ -157,6 +212,11 @@ export function VoicePage() {
     if (processorRef.current) {
       processorRef.current.disconnect()
       processorRef.current = null
+    }
+
+    if (gainNodeRef.current) {
+      gainNodeRef.current.disconnect()
+      gainNodeRef.current = null
     }
 
     if (playbackContextRef.current) {
@@ -214,23 +274,23 @@ export function VoicePage() {
         if (event.data?.audio) {
           try {
             const audioData = base64ToArrayBuffer(event.data.audio as string)
+            
             if (audioData.byteLength > 0) {
               audioQueueRef.current.push(audioData)
-              playAudioQueue()
-            } else {
-              console.warn('Received empty audio chunk')
+              
+              // Play audio queue (non-blocking)
+              playAudioQueue().catch(() => {
+                // Error in playAudioQueue
+              })
             }
           } catch (error) {
-            console.error('Failed to process TTS chunk:', error)
+            // Failed to process TTS chunk
           }
-        } else {
-          console.warn('TTS chunk received without audio data')
         }
         break
 
       case 'error':
         const errorMessage = (event.data?.message as string) || 'An error occurred'
-        console.error('Voice error:', errorMessage, event.data)
         setError(errorMessage)
         break
 
@@ -250,67 +310,114 @@ export function VoicePage() {
   }
 
   const playAudioQueue = async () => {
-    if (isPlayingRef.current || audioQueueRef.current.length === 0) return
+    if (isPlayingRef.current) {
+      // Already playing, will process queue when current playback finishes
+      return
+    }
+    
+    if (audioQueueRef.current.length === 0) {
+      return
+    }
     
     isPlayingRef.current = true
     
     // Use persistent playback context with high quality sample rate
     if (!playbackContextRef.current || playbackContextRef.current.state === 'closed') {
       playbackContextRef.current = new AudioContext({ sampleRate: 44100 })
+      gainNodeRef.current = playbackContextRef.current.createGain()
+      gainNodeRef.current.gain.value = 1.0
+      gainNodeRef.current.connect(playbackContextRef.current.destination)
     }
     
     const playbackContext = playbackContextRef.current
 
+    // Ensure gain node exists
+    if (!gainNodeRef.current) {
+      gainNodeRef.current = playbackContext.createGain()
+      gainNodeRef.current.gain.value = 1.0
+      gainNodeRef.current.connect(playbackContext.destination)
+    }
+
     // Resume AudioContext if suspended (required by browser autoplay policy)
-    if (playbackContext.state === 'suspended') {
+    if (playbackContext.state !== 'running') {
       try {
         await playbackContext.resume()
-        console.log('AudioContext resumed')
       } catch (error) {
-        console.error('Failed to resume AudioContext:', error)
         isPlayingRef.current = false
         return
       }
     }
 
+    // Process all queued audio chunks sequentially
+    // Wait for each chunk to finish before playing the next to prevent overlap
     while (audioQueueRef.current.length > 0) {
       const audioData = audioQueueRef.current.shift()!
       
       try {
+        // Cartesia returns PCM S16LE (signed 16-bit little-endian)
+        // The ArrayBuffer from base64 decode is already in the correct byte order
+        // Create Int16Array view - this handles little-endian correctly on most systems
         const int16Array = new Int16Array(audioData)
-        const float32Array = new Float32Array(int16Array.length)
         
-        for (let i = 0; i < int16Array.length; i++) {
-          float32Array[i] = int16Array[i] / 32768
+        if (int16Array.length === 0) {
+          continue
         }
         
+        // Check if we have valid audio data (not all zeros)
+        const hasAudio = int16Array.some(sample => sample !== 0)
+        if (!hasAudio) {
+          continue
+        }
+        
+        // Convert Int16 to Float32 (-1.0 to 1.0 range)
+        const float32Array = new Float32Array(int16Array.length)
+        for (let i = 0; i < int16Array.length; i++) {
+          // Normalize from [-32768, 32767] to [-1.0, 1.0]
+          // Use 32768.0 to ensure floating point division
+          float32Array[i] = Math.max(-1, Math.min(1, int16Array[i] / 32768.0))
+        }
+        
+        // Create audio buffer (mono, 44100 Hz)
         const audioBuffer = playbackContext.createBuffer(1, float32Array.length, 44100)
         audioBuffer.getChannelData(0).set(float32Array)
         
+        // Create and play audio source
         const source = playbackContext.createBufferSource()
         source.buffer = audioBuffer
-        source.connect(playbackContext.destination)
         
+        // Connect through gain node if available, otherwise directly to destination
+        if (gainNodeRef.current) {
+          source.connect(gainNodeRef.current)
+        } else {
+          source.connect(playbackContext.destination)
+        }
+        
+        // Play immediately and wait for it to finish before next chunk
         await new Promise<void>((resolve, reject) => {
-          source.onended = () => resolve()
-          source.onerror = (error) => {
-            console.error('Audio source error:', error)
-            reject(error)
+          source.onended = () => {
+            resolve()
           }
           try {
-            source.start()
+            source.start(0)
           } catch (error) {
-            console.error('Failed to start audio source:', error)
             reject(error)
           }
         })
       } catch (error) {
-        console.error('Audio playback error:', error)
+        // Continue with next chunk even if this one failed
       }
     }
 
     isPlayingRef.current = false
-    setStatus('ready')
+    
+    // If more chunks arrived while playing, process them
+    if (audioQueueRef.current.length > 0) {
+      playAudioQueue().catch(() => {
+        // Error in recursive playAudioQueue
+      })
+    } else {
+      setStatus('ready')
+    }
   }
 
   const toggleMute = () => {

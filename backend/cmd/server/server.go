@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 
@@ -76,15 +77,31 @@ func main() {
 	r.Use(appMiddleware.RequestLogger) // Custom zerolog middleware
 	r.Use(middleware.Recoverer)
 
-	// CORS
+	// CORS - Allow all origins in production for WebSocket support
+	corsOrigins := []string{"http://localhost:5173", "http://localhost:5174"}
+	if cfg.IsProduction() {
+		// In production, allow all origins for WebSocket compatibility
+		corsOrigins = []string{"*"}
+	}
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:5174", "http://localhost:*", "https://*.vercel.app"},
+		AllowedOrigins:   corsOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-Request-ID"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+
+	// Root endpoint
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"service": "AI Voice Agent API",
+			"status":  "running",
+			"version": "1.0.0",
+		})
+	})
 
 	// Health check
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {

@@ -53,7 +53,6 @@ export function ConversationsPage() {
       const response = await conversationsApi.list()
       setConversations(response.data || [])
     } catch (error) {
-      console.error('Failed to fetch conversations:', error)
       toast.error('Failed to load conversations')
     } finally {
       setLoading(false)
@@ -66,7 +65,6 @@ export function ConversationsPage() {
       setConversations((prev) => prev.filter((c) => c.id !== id))
       toast.success('Conversation deleted')
     } catch (error) {
-      console.error('Failed to delete conversation:', error)
       toast.error('Failed to delete conversation')
     }
   }
@@ -85,7 +83,6 @@ export function ConversationsPage() {
       )
       setExpandedId(id)
     } catch (error) {
-      console.error('Failed to fetch conversation:', error)
       toast.error('Failed to load conversation details')
     }
   }

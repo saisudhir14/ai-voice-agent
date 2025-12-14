@@ -85,7 +85,6 @@ export function AgentDetailPage() {
           is_active: data.is_active,
         })
       } catch (error) {
-        console.error('Failed to fetch agent:', error)
         toast.error('Agent not found')
         navigate({ to: '/agents' })
       } finally {

@@ -184,6 +184,23 @@ func (p *VoicePipeline) HandleSession(session *Session) {
 		p.runTTS(session, llmOut, ttsOut)
 	}()
 
+	// Send greeting immediately through TTS pipeline
+	if session.agent.Greeting != "" {
+		go func() {
+			// Small delay to ensure TTS is ready
+			time.Sleep(200 * time.Millisecond)
+			session.log.Debug().Str("greeting", session.agent.Greeting).Msg("Sending greeting to TTS")
+			select {
+			case llmOut <- session.agent.Greeting:
+				session.log.Debug().Msg("Greeting sent to TTS pipeline")
+			case <-session.ctx.Done():
+				return
+			case <-time.After(2 * time.Second):
+				session.log.Warn().Msg("Timeout sending greeting to TTS")
+			}
+		}()
+	}
+
 	// Start output goroutine (sends audio to client)
 	wg.Add(1)
 	go func() {
@@ -261,13 +278,14 @@ func (p *VoicePipeline) readAudioFromClient(session *Session, audioOut chan<- []
 				return
 			}
 
-			if messageType == websocket.BinaryMessage {
+			switch messageType {
+			case websocket.BinaryMessage:
 				select {
 				case audioOut <- data:
 				case <-session.ctx.Done():
 					return
 				}
-			} else if messageType == websocket.TextMessage {
+			case websocket.TextMessage:
 				var msg map[string]interface{}
 				if err := json.Unmarshal(data, &msg); err == nil {
 					if msg["type"] == "end" {
@@ -482,11 +500,19 @@ func (p *VoicePipeline) sendAudioToClient(session *Session, ttsIn <-chan []byte)
 			return
 		case audio, ok := <-ttsIn:
 			if !ok {
+				session.log.Debug().Msg("TTS input channel closed")
 				return
 			}
 
 			// Base64 encode audio for JSON transmission
 			audioBase64 := base64.StdEncoding.EncodeToString(audio)
+			session.log.Debug().
+				Int("audio_bytes", len(audio)).
+				Int("base64_length", len(audioBase64)).
+				Int("samples", len(audio)/2).
+				Float64("duration_sec", float64(len(audio)/2)/44100.0).
+				Msg("Sending TTS audio chunk to client")
+
 			session.sendEvent(EventTTSChunk, map[string]interface{}{
 				"audio": audioBase64,
 			})

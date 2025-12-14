@@ -16,8 +16,8 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		// Allow connections from any origin in development
-		// In production, you should check the origin
+		// Allow connections from any origin
+		// This is necessary for WebSocket connections from various frontend deployments
 		return true
 	},
 }
