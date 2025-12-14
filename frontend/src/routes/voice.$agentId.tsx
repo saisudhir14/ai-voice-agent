@@ -59,7 +59,7 @@ export function VoicePage() {
       try {
         const response = await agentsApi.get(agentId)
         setAgent(response.data)
-      } catch (error) {
+      } catch {
         navigate({ to: '/agents' })
       } finally {
         setLoading(false)
@@ -90,7 +90,7 @@ export function VoicePage() {
       if (playbackContextRef.current.state !== 'running') {
         try {
           await playbackContextRef.current.resume()
-        } catch (error) {
+        } catch {
           // AudioContext resume failed
         }
       }
@@ -173,12 +173,12 @@ export function VoicePage() {
         try {
           const data = JSON.parse(event.data)
           handleVoiceEvent(data)
-        } catch (error) {
+        } catch {
           // Failed to parse WebSocket message
         }
       }
 
-      ws.onerror = (error) => {
+      ws.onerror = () => {
         setError('Connection error')
       }
 
@@ -187,7 +187,7 @@ export function VoicePage() {
         setStatus('idle')
       }
 
-    } catch (error) {
+    } catch {
       setError('Failed to access microphone')
     }
   }
@@ -280,10 +280,10 @@ export function VoicePage() {
               
               // Play audio queue (non-blocking)
               playAudioQueue().catch(() => {
-                // Error in playAudioQueue
+                // Error in playAudioQueue - continue silently
               })
             }
-          } catch (error) {
+          } catch {
             // Failed to process TTS chunk
           }
         }
@@ -342,7 +342,7 @@ export function VoicePage() {
     if (playbackContext.state !== 'running') {
       try {
         await playbackContext.resume()
-      } catch (error) {
+      } catch {
         isPlayingRef.current = false
         return
       }
@@ -403,7 +403,7 @@ export function VoicePage() {
             reject(error)
           }
         })
-      } catch (error) {
+      } catch {
         // Continue with next chunk even if this one failed
       }
     }
@@ -413,7 +413,7 @@ export function VoicePage() {
     // If more chunks arrived while playing, process them
     if (audioQueueRef.current.length > 0) {
       playAudioQueue().catch(() => {
-        // Error in recursive playAudioQueue
+        // Error in recursive playAudioQueue - continue silently
       })
     } else {
       setStatus('ready')
