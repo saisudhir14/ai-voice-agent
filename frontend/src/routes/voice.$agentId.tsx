@@ -94,6 +94,7 @@ export function VoicePage() {
       wsRef.current = ws
 
       ws.onopen = () => {
+        console.log('WebSocket connected to:', `${WS_URL}/ws/voice/${agentId}`)
         setConnected(true)
         setStatus('ready')
         
@@ -211,9 +212,19 @@ export function VoicePage() {
 
       case 'tts_chunk':
         if (event.data?.audio) {
-          const audioData = base64ToArrayBuffer(event.data.audio as string)
-          audioQueueRef.current.push(audioData)
-          playAudioQueue()
+          try {
+            const audioData = base64ToArrayBuffer(event.data.audio as string)
+            if (audioData.byteLength > 0) {
+              audioQueueRef.current.push(audioData)
+              playAudioQueue()
+            } else {
+              console.warn('Received empty audio chunk')
+            }
+          } catch (error) {
+            console.error('Failed to process TTS chunk:', error)
+          }
+        } else {
+          console.warn('TTS chunk received without audio data')
         }
         break
 
@@ -250,6 +261,18 @@ export function VoicePage() {
     
     const playbackContext = playbackContextRef.current
 
+    // Resume AudioContext if suspended (required by browser autoplay policy)
+    if (playbackContext.state === 'suspended') {
+      try {
+        await playbackContext.resume()
+        console.log('AudioContext resumed')
+      } catch (error) {
+        console.error('Failed to resume AudioContext:', error)
+        isPlayingRef.current = false
+        return
+      }
+    }
+
     while (audioQueueRef.current.length > 0) {
       const audioData = audioQueueRef.current.shift()!
       
@@ -268,9 +291,18 @@ export function VoicePage() {
         source.buffer = audioBuffer
         source.connect(playbackContext.destination)
         
-        await new Promise<void>((resolve) => {
+        await new Promise<void>((resolve, reject) => {
           source.onended = () => resolve()
-          source.start()
+          source.onerror = (error) => {
+            console.error('Audio source error:', error)
+            reject(error)
+          }
+          try {
+            source.start()
+          } catch (error) {
+            console.error('Failed to start audio source:', error)
+            reject(error)
+          }
         })
       } catch (error) {
         console.error('Audio playback error:', error)
