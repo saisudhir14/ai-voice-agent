@@ -28,11 +28,19 @@ type Conversation struct {
 	Messages []Message `gorm:"-" json:"messages,omitempty"`
 }
 
-// BeforeDelete hook to handle cascade delete for conversation
+// BeforeDelete hook to handle cascade soft delete for conversation
+// Note: With soft deletes, we soft delete related messages when a conversation is soft deleted
 func (c *Conversation) BeforeDelete(tx *gorm.DB) error {
-	// Delete all messages belonging to this conversation
-	if err := tx.Where("conversation_id = ?", c.ID).Delete(&Message{}).Error; err != nil {
+	// Soft delete all messages belonging to this conversation
+	// Note: Using Delete with model instances ensures soft delete
+	var messages []Message
+	if err := tx.Where("conversation_id = ?", c.ID).Find(&messages).Error; err != nil {
 		return err
+	}
+	for _, msg := range messages {
+		if err := tx.Delete(&msg).Error; err != nil {
+			return err
+		}
 	}
 	return nil
 }

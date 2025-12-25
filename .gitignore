@@ -56,3 +56,6 @@ backend/tmp/
 *.db
 *.sqlite
 
+# Documentation
+PRD.md
+

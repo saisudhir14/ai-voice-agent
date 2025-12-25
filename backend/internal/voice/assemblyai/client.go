@@ -12,19 +12,6 @@ import (
 	"github.com/yourusername/ai-voice-agent/internal/logger"
 )
 
-const (
-	// New v3 streaming endpoint (Universal-2 model)
-	realtimeURL = "wss://streaming.assemblyai.com/v3/ws"
-	sampleRate  = 16000
-)
-
-// TranscriptEvent represents a transcription result
-type TranscriptEvent struct {
-	Text       string  `json:"text"`
-	IsPartial  bool    `json:"is_partial"`
-	Confidence float64 `json:"confidence"`
-}
-
 // Client handles AssemblyAI STT streaming
 type Client struct {
 	apiKey string

@@ -41,12 +41,14 @@ func (r *UserRepository) Create(user *models.User) error {
 
 func (r *UserRepository) GetByID(id uuid.UUID) (*models.User, error) {
 	var user models.User
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&user, "id = ?", id).Error
 	return &user, err
 }
 
 func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
 	var user models.User
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&user, "email = ?", email).Error
 	if err != nil {
 		return nil, err
@@ -59,7 +61,14 @@ func (r *UserRepository) Update(user *models.User) error {
 }
 
 func (r *UserRepository) Delete(id uuid.UUID) error {
-	return r.db.Delete(&models.User{}, "id = ?", id).Error
+	// GORM automatically performs soft delete when model has DeletedAt field
+	// BeforeDelete hook will handle cascade soft deletes
+	// NOTE: Must fetch the user first to trigger BeforeDelete hook
+	var user models.User
+	if err := r.db.First(&user, "id = ?", id).Error; err != nil {
+		return err
+	}
+	return r.db.Delete(&user).Error
 }
 
 // ==================== Industry Repository ====================
@@ -74,18 +83,21 @@ func NewIndustryRepository(db *gorm.DB) *IndustryRepository {
 
 func (r *IndustryRepository) List() ([]models.Industry, error) {
 	var industries []models.Industry
+	// GORM automatically excludes soft-deleted records when using Find()
 	err := r.db.Where("is_active = ?", true).Order("name ASC").Find(&industries).Error
 	return industries, err
 }
 
 func (r *IndustryRepository) GetByID(id uuid.UUID) (*models.Industry, error) {
 	var industry models.Industry
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&industry, "id = ?", id).Error
 	return &industry, err
 }
 
 func (r *IndustryRepository) GetBySlug(slug string) (*models.Industry, error) {
 	var industry models.Industry
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&industry, "slug = ?", slug).Error
 	return &industry, err
 }
@@ -106,6 +118,7 @@ func (r *AgentRepository) Create(agent *models.Agent) error {
 
 func (r *AgentRepository) GetByID(id uuid.UUID) (*models.Agent, error) {
 	var agent models.Agent
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&agent, "id = ?", id).Error
 	if err != nil {
 		return nil, err
@@ -117,6 +130,7 @@ func (r *AgentRepository) GetByID(id uuid.UUID) (*models.Agent, error) {
 
 func (r *AgentRepository) ListByUserID(userID uuid.UUID) ([]models.Agent, error) {
 	var agents []models.Agent
+	// GORM automatically excludes soft-deleted records when using Find()
 	err := r.db.Where("user_id = ?", userID).Order("created_at DESC").Find(&agents).Error
 	if err != nil {
 		return nil, err
@@ -129,6 +143,7 @@ func (r *AgentRepository) ListByUserID(userID uuid.UUID) ([]models.Agent, error)
 }
 
 // loadAgentRelations loads related entities for an agent
+// Note: GORM automatically excludes soft-deleted records when using First()
 func (r *AgentRepository) loadAgentRelations(agent *models.Agent) {
 	if agent.IndustryID != uuid.Nil {
 		r.db.First(&agent.Industry, "id = ?", agent.IndustryID)
@@ -143,7 +158,8 @@ func (r *AgentRepository) Update(agent *models.Agent) error {
 }
 
 func (r *AgentRepository) Delete(id uuid.UUID) error {
-	// BeforeDelete hook will handle cascade
+	// GORM automatically performs soft delete when model has DeletedAt field
+	// BeforeDelete hook will handle cascade soft deletes
 	var agent models.Agent
 	if err := r.db.First(&agent, "id = ?", id).Error; err != nil {
 		return err
@@ -153,6 +169,7 @@ func (r *AgentRepository) Delete(id uuid.UUID) error {
 
 func (r *AgentRepository) CountByUserID(userID uuid.UUID) (int64, error) {
 	var count int64
+	// GORM automatically excludes soft-deleted records when using Count() on models with DeletedAt
 	err := r.db.Model(&models.Agent{}).Where("user_id = ?", userID).Count(&count).Error
 	return count, err
 }
@@ -173,6 +190,7 @@ func (r *ConversationRepository) Create(conversation *models.Conversation) error
 
 func (r *ConversationRepository) GetByID(id uuid.UUID) (*models.Conversation, error) {
 	var conversation models.Conversation
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&conversation, "id = ?", id).Error
 	if err != nil {
 		return nil, err
@@ -184,6 +202,7 @@ func (r *ConversationRepository) GetByID(id uuid.UUID) (*models.Conversation, er
 
 func (r *ConversationRepository) GetBySessionID(sessionID string) (*models.Conversation, error) {
 	var conversation models.Conversation
+	// GORM automatically excludes soft-deleted records when using First()
 	err := r.db.First(&conversation, "session_id = ?", sessionID).Error
 	if err != nil {
 		return nil, err
@@ -194,8 +213,9 @@ func (r *ConversationRepository) GetBySessionID(sessionID string) (*models.Conve
 }
 
 // loadConversationRelations loads related entities for a conversation
+// Note: GORM automatically excludes soft-deleted records when using First() and Find()
 func (r *ConversationRepository) loadConversationRelations(conv *models.Conversation, includeMessages bool) {
-	// Load Agent
+	// Load Agent (excludes soft-deleted agents automatically)
 	if conv.AgentID != uuid.Nil {
 		r.db.First(&conv.Agent, "id = ?", conv.AgentID)
 		// Also load agent's industry
@@ -203,7 +223,7 @@ func (r *ConversationRepository) loadConversationRelations(conv *models.Conversa
 			r.db.First(&conv.Agent.Industry, "id = ?", conv.Agent.IndustryID)
 		}
 	}
-	// Load Messages if requested
+	// Load Messages if requested (excludes soft-deleted messages automatically)
 	if includeMessages {
 		r.db.Where("conversation_id = ?", conv.ID).Order("start_time ASC").Find(&conv.Messages)
 	}
@@ -211,6 +231,7 @@ func (r *ConversationRepository) loadConversationRelations(conv *models.Conversa
 
 func (r *ConversationRepository) ListByAgentID(agentID uuid.UUID, limit, offset int) ([]models.Conversation, error) {
 	var conversations []models.Conversation
+	// GORM automatically excludes soft-deleted records when using Find()
 	err := r.db.Where("agent_id = ?", agentID).
 		Order("started_at DESC").
 		Limit(limit).
@@ -221,8 +242,10 @@ func (r *ConversationRepository) ListByAgentID(agentID uuid.UUID, limit, offset 
 
 func (r *ConversationRepository) ListByUserID(userID uuid.UUID, limit, offset int) ([]models.Conversation, error) {
 	var conversations []models.Conversation
+	// GORM automatically excludes soft-deleted records for both conversations and agents
 	err := r.db.Joins("JOIN agents ON agents.id = conversations.agent_id").
 		Where("agents.user_id = ?", userID).
+		Where("agents.deleted_at IS NULL"). // Explicitly exclude soft-deleted agents
 		Order("conversations.started_at DESC").
 		Limit(limit).
 		Offset(offset).
@@ -242,7 +265,8 @@ func (r *ConversationRepository) Update(conversation *models.Conversation) error
 }
 
 func (r *ConversationRepository) Delete(id uuid.UUID) error {
-	// BeforeDelete hook will handle cascade delete of messages
+	// GORM automatically performs soft delete when model has DeletedAt field
+	// BeforeDelete hook will handle cascade soft deletes of messages
 	var conversation models.Conversation
 	if err := r.db.First(&conversation, "id = ?", id).Error; err != nil {
 		return err
@@ -270,6 +294,7 @@ func (r *MessageRepository) CreateBatch(messages []models.Message) error {
 
 func (r *MessageRepository) ListByConversationID(conversationID uuid.UUID) ([]models.Message, error) {
 	var messages []models.Message
+	// GORM automatically excludes soft-deleted records when using Find()
 	err := r.db.Where("conversation_id = ?", conversationID).
 		Order("start_time ASC").
 		Find(&messages).Error

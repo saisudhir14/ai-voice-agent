@@ -36,19 +36,28 @@ type Agent struct {
 	Conversations []Conversation `gorm:"-" json:"conversations,omitempty"`
 }
 
-// BeforeDelete hook to handle cascade delete for agent
+// BeforeDelete hook to handle cascade soft delete for agent
+// Note: With soft deletes, we soft delete related conversations and API keys when an agent is soft deleted
 func (a *Agent) BeforeDelete(tx *gorm.DB) error {
-	// Delete all conversations belonging to this agent (which cascades to messages)
+	// Soft delete all conversations belonging to this agent (which will cascade to messages via conversation's BeforeDelete)
 	var conversations []Conversation
 	tx.Where("agent_id = ?", a.ID).Find(&conversations)
 	for _, conv := range conversations {
+		// This will trigger soft delete (since Conversation has DeletedAt field)
 		if err := tx.Delete(&conv).Error; err != nil {
 			return err
 		}
 	}
-	// Delete all API keys belonging to this agent
-	if err := tx.Where("agent_id = ?", a.ID).Delete(&APIKey{}).Error; err != nil {
+	// Soft delete all API keys belonging to this agent
+	// Note: Using Delete with a model instance ensures soft delete
+	var apiKeys []APIKey
+	if err := tx.Where("agent_id = ?", a.ID).Find(&apiKeys).Error; err != nil {
 		return err
+	}
+	for _, key := range apiKeys {
+		if err := tx.Delete(&key).Error; err != nil {
+			return err
+		}
 	}
 	return nil
 }
