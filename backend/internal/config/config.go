@@ -30,6 +30,11 @@ type Config struct {
 
 	// Database Seeding
 	AutoSeed bool // Automatically seed database on server startup
+
+	// Presidio DLP
+	PresidioEnabled       bool
+	PresidioAnalyzerURL   string
+	PresidioAnonymizerURL string
 }
 
 func Load() *Config {
@@ -44,8 +49,11 @@ func Load() *Config {
 		OpenAIKey:           getEnv("OPENAI_API_KEY", ""),
 		LangChainServiceURL: getEnv("LANGCHAIN_SERVICE_URL", "http://localhost:8081"),
 		UseLangChain:        getEnv("USE_LANGCHAIN", "true") == "true",
-		JWTSecret:           getEnv("JWT_SECRET", "change-this-secret"),
-		AutoSeed:            getEnv("AUTO_SEED", "true") == "true", // Default to true for development
+		JWTSecret:             getEnv("JWT_SECRET", "change-this-secret"),
+		AutoSeed:              getEnv("AUTO_SEED", "true") == "true", // Default to true for development
+		PresidioEnabled:       getEnv("PRESIDIO_ENABLED", "false") == "true",
+		PresidioAnalyzerURL:   getEnv("PRESIDIO_ANALYZER_URL", "http://localhost:5001"),
+		PresidioAnonymizerURL: getEnv("PRESIDIO_ANONYMIZER_URL", "http://localhost:5002"),
 	}
 }
 

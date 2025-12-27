@@ -14,6 +14,7 @@ import (
 	"github.com/yourusername/ai-voice-agent/internal/config"
 	"github.com/yourusername/ai-voice-agent/internal/logger"
 	"github.com/yourusername/ai-voice-agent/internal/models"
+	"github.com/yourusername/ai-voice-agent/internal/security"
 	"github.com/yourusername/ai-voice-agent/internal/services"
 	"github.com/yourusername/ai-voice-agent/internal/voice/assemblyai"
 	"github.com/yourusername/ai-voice-agent/internal/voice/cartesia"
@@ -28,6 +29,7 @@ type VoicePipeline struct {
 	ttsClient       *cartesia.Client
 	llmClient       *llm.Client
 	langchainClient *langchain.Client
+	presidioClient  *security.PresidioClient
 }
 
 // NewVoicePipeline creates a new voice pipeline
@@ -47,6 +49,29 @@ func NewVoicePipeline(cfg *config.Config) *VoicePipeline {
 		log.Info().Str("url", cfg.LangChainServiceURL).Msg("LangChain service enabled")
 	} else {
 		log.Info().Msg("Using direct LLM API calls (LangChain disabled)")
+	}
+
+	// Initialize Presidio DLP client
+	presidioConfig := security.NewPresidioConfig().
+		WithEnabled(cfg.PresidioEnabled).
+		WithURLs(cfg.PresidioAnalyzerURL, cfg.PresidioAnonymizerURL)
+
+	pipeline.presidioClient = security.NewPresidioClient(presidioConfig, log)
+
+	if cfg.PresidioEnabled {
+		log.Info().
+			Str("analyzer_url", cfg.PresidioAnalyzerURL).
+			Str("anonymizer_url", cfg.PresidioAnonymizerURL).
+			Msg("Presidio DLP enabled")
+
+		// Health check Presidio services
+		ctx := context.Background()
+		if err := pipeline.presidioClient.HealthCheck(ctx); err != nil {
+			log.Warn().Err(err).Msg("Presidio health check failed - continuing without DLP")
+			presidioConfig.Enabled = false
+		}
+	} else {
+		log.Info().Msg("Presidio DLP disabled")
 	}
 
 	return pipeline
@@ -303,17 +328,41 @@ func (p *VoicePipeline) runSTT(session *Session, audioIn <-chan []byte, sttOut c
 				session.log.Debug().Str("text", event.Text).Msg("STT final transcript")
 				session.sendEvent(EventSTTOutput, map[string]string{"text": event.Text})
 
+				// Redact PII before storing and processing
+				// Best Practice: Redact BEFORE sending to database AND LLM (third-party APIs)
+				redactedText := event.Text
+				if p.presidioClient != nil {
+					var err error
+					redactedText, err = p.presidioClient.RedactPII(session.ctx, event.Text)
+					if err != nil {
+						session.log.Warn().Err(err).Msg("PII redaction failed, using original text")
+						redactedText = event.Text // Fail-safe: use original if redaction fails
+					} else if redactedText != event.Text {
+						session.log.Info().
+							Str("original", event.Text).
+							Str("redacted", redactedText).
+							Msg("PII redacted from user message")
+					}
+				}
+
 				elapsed := int(time.Since(session.startTime).Milliseconds())
 				session.conversationService.AddMessage(
 					session.conversation.ID,
 					"user",
-					event.Text,
+					redactedText, // Store redacted version
 					elapsed,
 					elapsed,
 				)
 
+				// Create redacted event to send to LLM
+				redactedEvent := assemblyai.TranscriptEvent{
+					Text:       redactedText, // Send redacted text to LLM
+					IsPartial:  false,
+					Confidence: event.Confidence,
+				}
+
 				select {
-				case sttOut <- event:
+				case sttOut <- redactedEvent: // Send redacted event to LLM
 				case <-session.ctx.Done():
 					return
 				}
