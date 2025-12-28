@@ -6,17 +6,27 @@ help: ## Show this help message
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-dev: ## Run both backend and frontend
+dev: ## Start database, backend, and frontend
+	@echo "Starting database..."
+	@docker-compose up -d postgres
 	@echo "Starting backend and frontend..."
 	@cd backend && go run cmd/server/server.go & \
 	cd frontend && npm run dev & \
 	wait
 
-dev-backend: ## Run only backend
+dev-backend: ## Start database and run backend
+	@echo "Starting database..."
+	@docker-compose up -d postgres
 	@cd backend && go run cmd/server/server.go
 
 dev-frontend: ## Run only frontend
 	@cd frontend && npm run dev
+
+db-up: ## Start only the database
+	@docker-compose up -d postgres
+
+db-down: ## Stop the database container
+	@docker-compose down
 
 build: ## Build both backend and frontend
 	@echo "Building backend..."
