@@ -325,7 +325,7 @@ func (p *VoicePipeline) runSTT(session *Session, audioIn <-chan []byte, sttOut c
 			if event.IsPartial {
 				session.sendEvent(EventSTTChunk, map[string]string{"text": event.Text})
 			} else {
-				session.log.Debug().Str("text", event.Text).Msg("STT final transcript")
+				// session.log.Debug().Str("text", event.Text).Msg("STT final transcript")
 				session.sendEvent(EventSTTOutput, map[string]string{"text": event.Text})
 
 				// Redact PII before storing and processing
@@ -338,12 +338,12 @@ func (p *VoicePipeline) runSTT(session *Session, audioIn <-chan []byte, sttOut c
 						session.log.Warn().Err(err).Msg("PII redaction failed, using original text")
 						redactedText = event.Text // Fail-safe: use original if redaction fails
 					} else if redactedText != event.Text {
-						session.log.Info().
-							Str("original", event.Text).
-							Str("redacted", redactedText).
-							Msg("PII redacted from user message")
+						session.log.Info().Msg("PII redacted from user message")
 					}
 				}
+
+				// Log redacted transcript (never log original text with PII)
+				session.log.Debug().Str("text", redactedText).Msg("STT final transcript")
 
 				elapsed := int(time.Since(session.startTime).Milliseconds())
 				session.conversationService.AddMessage(
