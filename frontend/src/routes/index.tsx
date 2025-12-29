@@ -88,8 +88,10 @@ export function HomePage() {
                       <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Button>
-                  <Button variant="ghost" className="text-slate-300 hover:text-white group">
-                    View Showcase <MousePointer2 className="h-4 w-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <Button variant="ghost" asChild className="text-slate-300 hover:text-white group">
+                    <Link to="/showcase">
+                      View Showcase <MousePointer2 className="h-4 w-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    </Link>
                   </Button>
                 </div>
               </AnimatedSection>

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -20,6 +21,11 @@ import { Route as VoiceAgentIdRouteImport } from './routes/voice.$agentId'
 import { Route as AgentsCreateRouteImport } from './routes/agents.create'
 import { Route as AgentsAgentIdRouteImport } from './routes/agents.$agentId'
 
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
     | '/voice/$agentId'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
     | '/voice/$agentId'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
     | '/voice/$agentId'
@@ -152,11 +164,19 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   VoiceAgentIdRoute: typeof VoiceAgentIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -252,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ShowcaseRoute: ShowcaseRoute,
   VoiceAgentIdRoute: VoiceAgentIdRoute,
 }
 export const routeTree = rootRouteImport
