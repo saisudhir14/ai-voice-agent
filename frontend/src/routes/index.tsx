@@ -237,7 +237,7 @@ export function HomePage() {
             <a href="#" className="hover:text-white transition-colors">Docs</a>
           </div>
           <p className="text-slate-500 text-sm">
-            © 2024 VoiceAI Platform. Built with Cartesia.
+            © 2026 VoiceAI Platform. Built with Cartesia.
           </p>
         </div>
       </footer>
