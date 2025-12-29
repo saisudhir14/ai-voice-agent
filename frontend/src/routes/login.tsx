@@ -3,11 +3,14 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { authApi } from '@/lib/api'
 import { loginSchema, type LoginInput } from '@/lib/schemas'
-import { Mic, Mail, Lock, Loader2 } from 'lucide-react'
+import { Mic, Mail, Lock, Loader2, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { InputField } from '@/components/shared/form-field'
+import { 
+  GradientBackground, 
+  SpotlightCard, 
+  AnimatedSection 
+} from '@/components/shared'
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -50,72 +53,95 @@ function LoginPage() {
       const response = await authApi.login(formData)
       const { user, access_token, refresh_token } = response.data
       setAuth(user, access_token, refresh_token)
-      toast.success('Welcome back!')
+      toast.success('Access granted. Welcome back.')
       navigate({ to: '/dashboard' })
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { error?: string } } }
-      toast.error(err.response?.data?.error || 'Invalid credentials')
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Authentication failed')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4">
-            <Mic className="h-8 w-8 text-white" />
+    <div className="min-h-screen relative overflow-hidden bg-nebula-deep flex items-center justify-center p-6">
+      <GradientBackground intensity="medium" />
+      
+      <div className="relative z-10 w-full max-w-md mt-12">
+        <AnimatedSection>
+          <div className="text-center mb-10">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mb-6 shadow-xl shadow-cyan-500/20">
+              <Mic className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white tracking-tighter">Secure Login</h1>
+            <p className="text-slate-500 mt-2">Access your voice intelligence hub</p>
           </div>
-          <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-muted-foreground mt-2">Sign in to your account</p>
-        </div>
+        </AnimatedSection>
 
-        {/* Form */}
-        <Card>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <InputField
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                error={errors.email}
-                icon={<Mail className="h-4 w-4" />}
-              />
+        <AnimatedSection delay={0.1}>
+          <SpotlightCard className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email Address</label>
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-500/50 focus:ring-cyan-500/20 text-white outline-none transition-all"
+                    placeholder="you@domain.com"
+                  />
+                </div>
+                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+              </div>
 
-              <InputField
-                label="Password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                error={errors.password}
-                icon={<Lock className="h-4 w-4" />}
-              />
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="password" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Password</label>
+                  <a href="#" className="text-[10px] text-cyan-500 hover:text-cyan-400 uppercase tracking-tighter transition-colors">Forgot Keys?</a>
+                </div>
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-cyan-500/50 focus:ring-cyan-500/20 text-white outline-none transition-all"
+                    placeholder="••••••••"
+                  />
+                </div>
+                {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
+              </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full h-14 mt-4 bg-white text-black hover:bg-slate-200 rounded-xl font-bold text-lg shadow-xl shadow-white/5 transition-all" 
+                disabled={isLoading}
+              >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  'Sign In'
+                  <span className="flex items-center justify-center gap-2">
+                    Enter System <ArrowRight className="h-5 w-5" />
+                  </span>
                 )}
               </Button>
             </form>
-          </CardContent>
-        </Card>
+          </SpotlightCard>
+        </AnimatedSection>
 
-        {/* Register link */}
-        <p className="text-center text-muted-foreground mt-6">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-primary hover:underline">
-            Sign up
-          </Link>
-        </p>
+        <AnimatedSection delay={0.2}>
+          <p className="text-center text-slate-500 mt-8 text-sm">
+            New to the platform?{' '}
+            <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+              Request Access
+            </Link>
+          </p>
+        </AnimatedSection>
       </div>
     </div>
   )

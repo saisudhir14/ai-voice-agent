@@ -64,6 +64,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Nebula futuristic colors
+        nebula: {
+          deep: "#020617", // Midnight Slate
+          purple: "#8b5cf6",
+          cyan: "#06b6d4",
+          pink: "#ec4899",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -72,6 +79,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter var', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
@@ -90,12 +98,23 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.5' },
         },
+        "orbit": {
+          "0%": { transform: "rotate(0deg) translateY(-30px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateY(-30px) rotate(-360deg)" }
+        },
+        "morph": {
+          "0%, 100%": { borderRadius: "42% 58% 70% 30% / 45% 45% 55% 55%" },
+          "34%": { borderRadius: "70% 30% 46% 54% / 30% 29% 71% 70%" },
+          "67%": { borderRadius: "100% 60% 60% 100% / 100% 100% 60% 60%" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "wave": "wave 1.5s ease-in-out infinite",
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "orbit": "orbit 10s linear infinite",
+        "morph": "morph 8s ease-in-out infinite",
       },
     },
   },

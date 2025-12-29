@@ -43,9 +43,8 @@ func (a *Anonymizer) Anonymize(ctx context.Context, text string, analyzeResults 
 	}
 
 	a.logger.Info().
-		// Str("text", result.Text).
-		// Str("redacted", result.Text).
 		Int("entities_redacted", len(result.Items)).
+		Int("text_length", len(result.Text)).
 		Msg("Text anonymized successfully")
 
 	return result.Text, nil

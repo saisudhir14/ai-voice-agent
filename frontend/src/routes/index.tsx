@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { Mic, Zap, Shield, Globe, ArrowRight } from 'lucide-react'
+import { Mic, Zap, ArrowRight, MousePointer2, Sparkles, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { AnimatedSection, AnimatedCard, GradientBackground } from '@/components/shared'
+import { 
+  AnimatedSection, 
+  GradientBackground, 
+  SpotlightCard, 
+  OrbVisualizer 
+} from '@/components/shared'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -13,293 +17,227 @@ export const Route = createFileRoute('/')({
 const features = [
   {
     icon: Mic,
-    title: 'Natural Conversations',
-    description: 'State-of-the-art speech recognition and synthesis for human-like conversations.',
-    color: 'text-primary',
-    bg: 'bg-primary/10',
+    title: 'Neural Voice Synthesis',
+    description: 'Ultra-low latency voices that sound indistinguishable from humans, powered by Cartesia.',
+    color: 'text-cyan-400',
   },
   {
-    icon: Zap,
-    title: 'Instant Setup',
-    description: 'Choose your industry, customize prompts, and deploy your agent in minutes.',
-    color: 'text-accent',
-    bg: 'bg-accent/10',
+    icon: Sparkles,
+    title: 'Contextual Intelligence',
+    description: 'Agents that understand nuance, emotion, and complex instructions in real-time.',
+    color: 'text-purple-400',
   },
   {
-    icon: Shield,
-    title: 'Enterprise Ready',
-    description: 'Secure, scalable, and reliable infrastructure for businesses of all sizes.',
-    color: 'text-green-500',
-    bg: 'bg-green-500/10',
+    icon: Layers,
+    title: 'Seamless Workflows',
+    description: 'Connect your agent to any API, CRM, or database with zero-code integrations.',
+    color: 'text-pink-400',
   },
 ]
 
-const industries = [
-  { name: 'Customer Support', icon: '🎧' },
-  { name: 'Sales', icon: '📈' },
-  { name: 'Healthcare', icon: '🏥' },
-  { name: 'Real Estate', icon: '🏠' },
-  { name: 'Restaurant', icon: '🍽️' },
-  { name: 'Legal', icon: '⚖️' },
-  { name: 'Education', icon: '🎓' },
-  { name: 'Custom', icon: '⚙️' },
+const steps = [
+  { title: 'Define Persona', desc: 'Set the tone, role, and knowledge.' },
+  { title: 'Choose Voice', desc: 'Select from 100+ neural voices.' },
+  { title: 'Deploy Anywhere', desc: 'Web, Mobile, or Phone lines.' },
 ]
 
 export function HomePage() {
   return (
-    <div className="relative overflow-hidden min-h-screen">
-      {/* Enhanced Animated Background */}
-      <GradientBackground intensity="medium" />
+    <div className="relative overflow-hidden min-h-screen bg-nebula-deep text-slate-200">
+      <GradientBackground intensity="high" />
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <AnimatedSection delay={0.1}>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <Badge variant="secondary" className="mb-8 inline-flex items-center gap-2">
-                <Zap className="h-3 w-3" />
-                Powered by Cartesia AI
-              </Badge>
-            </motion.div>
-          </AnimatedSection>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-left">
+              <AnimatedSection delay={0.1}>
+                <Badge className="mb-6 bg-white/5 border-white/10 text-cyan-400 backdrop-blur-md px-4 py-1.5 rounded-full">
+                  <span className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    </span>
+                    The Future of Voice AI is Here
+                  </span>
+                </Badge>
+              </AnimatedSection>
 
-          <AnimatedSection delay={0.2}>
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Build Voice AI Agents
-              <br />
-              <motion.span 
-                className="gradient-text inline-block"
-                animate={{
-                  backgroundPosition: ['0%', '100%', '0%'],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: 'linear',
-                }}
-                style={{
-                  backgroundSize: '200% 200%',
-                }}
-              >
-                In Minutes
-              </motion.span>
-            </motion.h1>
-          </AnimatedSection>
+              <AnimatedSection delay={0.2}>
+                <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-[0.9] tracking-tighter">
+                  Crafting 
+                  <br />
+                  <span className="text-gradient-nebula">Infinite</span>
+                  <br />
+                  Conversations
+                </h1>
+              </AnimatedSection>
 
-          <AnimatedSection delay={0.3}>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Create intelligent voice assistants for your business. 
-              No coding required. Just select your industry, customize the behavior, 
-              and deploy instantly.
-            </p>
-          </AnimatedSection>
+              <AnimatedSection delay={0.3}>
+                <p className="text-lg md:text-xl text-slate-400 max-w-xl mb-10 leading-relaxed">
+                  Deploy sophisticated, human-like voice agents that handle support, 
+                  sales, and operations autonomously. Built for the next generation of business.
+                </p>
+              </AnimatedSection>
 
-          <AnimatedSection delay={0.4}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="lg" asChild className="group">
-                  <Link to="/register">
-                    Get Started Free
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-              </motion.div>
+              <AnimatedSection delay={0.4}>
+                <div className="flex flex-wrap items-center gap-6">
+                  <Button size="lg" asChild className="bg-white text-black hover:bg-slate-200 rounded-full px-8 h-14 text-lg font-medium group">
+                    <Link to="/register">
+                      Get Started Free
+                      <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" className="text-slate-300 hover:text-white group">
+                    View Showcase <MousePointer2 className="h-4 w-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </Button>
+                </div>
+              </AnimatedSection>
             </div>
-          </AnimatedSection>
 
-          {/* Enhanced Voice Animation Card */}
-          <AnimatedSection delay={0.5}>
-            <motion.div 
-              className="relative max-w-md mx-auto"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-2xl"
-                animate={{
-                  opacity: [0.5, 0.8, 0.5],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-              <Card className="relative glass hover:border-primary/50 transition-all duration-300">
-                <CardContent className="p-8 text-center">
+            <div className="relative flex justify-center items-center">
+              <AnimatedSection delay={0.5} className="w-full">
+                <div className="relative aspect-square flex items-center justify-center">
+                  {/* Decorative Elements */}
+                  <div className="absolute inset-0 bg-cyan-500/10 rounded-full blur-[120px] animate-pulse" />
+                  <OrbVisualizer size="lg" className="z-10" />
+                  
+                  {/* Floating Labels */}
                   <motion.div 
-                    className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center"
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute top-10 right-0 glass-plus p-4 rounded-2xl z-20"
                   >
-                    <Mic className="h-12 w-12 text-white" />
+                    <div className="text-xs text-cyan-400 font-mono mb-1">Latency</div>
+                    <div className="text-xl font-bold text-white tracking-tight">42ms</div>
                   </motion.div>
-                  <div className="voice-wave justify-center mb-4">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                  <motion.p 
-                    className="text-muted-foreground italic"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
+
+                  <motion.div 
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{ duration: 5, repeat: Infinity }}
+                    className="absolute bottom-10 left-0 glass-plus p-4 rounded-2xl z-20"
                   >
-                    "Hello! How can I help you today?"
-                  </motion.p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </AnimatedSection>
+                    <div className="text-xs text-purple-400 font-mono mb-1">Accuracy</div>
+                    <div className="text-xl font-bold text-white tracking-tight">99.2%</div>
+                  </motion.div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="relative py-24 px-4">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Everything You Need
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Build, deploy, and manage voice agents with ease
-              </p>
-            </div>
-          </AnimatedSection>
+      <section className="relative py-32 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Designed for Performance</h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Everything you need to scale your voice operations without the overhead.
+            </p>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <AnimatedCard
-                key={feature.title}
-                delay={0.1 * index}
-                hover={true}
-              >
-                <motion.div
-                  className={`h-14 w-14 rounded-xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}
-                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <feature.icon className={`h-7 w-7 ${feature.color}`} />
-                </motion.div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </AnimatedCard>
+              <AnimatedSection key={index} delay={0.1 * index}>
+                <SpotlightCard>
+                  <div className={`h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mb-6`}>
+                    <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
+                  <p className="text-slate-400 leading-relaxed">{feature.description}</p>
+                </SpotlightCard>
+              </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Industries Section */}
-      <section className="relative py-24 px-4 bg-muted/30">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedSection>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Built for Every Industry
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Pre-configured templates for common use cases
-              </p>
+      {/* Workflow Section */}
+      <section className="relative py-32 px-4 bg-white/[0.02]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8">From Concept to <span className="text-cyan-400">Live</span> in Seconds</h2>
+              <div className="space-y-8">
+                {steps.map((step, i) => (
+                  <div key={i} className="flex gap-6">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-white mb-1">{step.title}</h4>
+                      <p className="text-slate-400">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {industries.map((industry, index) => (
-              <motion.div
-                key={industry.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.05 }}
-                className="cursor-pointer"
-              >
-                <Card className="hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 h-full">
-                  <CardContent className="p-6 text-center">
-                    <motion.div 
-                      className="text-4xl mb-3"
-                      whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {industry.icon}
-                    </motion.div>
-                    <div className="font-medium">{industry.name}</div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <div className="glass-plus rounded-3xl p-8 border-white/5 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                </div>
+              </div>
+              <div className="space-y-4 pt-6">
+                <div className="h-4 w-3/4 bg-white/5 rounded-full animate-pulse" />
+                <div className="h-4 w-1/2 bg-white/5 rounded-full animate-pulse" />
+                <div className="space-y-2 py-4">
+                  <div className="h-12 w-full bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center px-4">
+                    <div className="h-2 w-2 rounded-full bg-cyan-400 mr-3" />
+                    <span className="text-sm font-mono text-cyan-400">system.initialize()</span>
+                  </div>
+                  <div className="h-12 w-full bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center px-4">
+                    <div className="h-2 w-2 rounded-full bg-purple-400 mr-3" />
+                    <span className="text-sm font-mono text-purple-400">voice.load("Cartesia_Sonic")</span>
+                  </div>
+                </div>
+                <div className="h-4 w-2/3 bg-white/5 rounded-full animate-pulse" />
+              </div>
+              {/* Interactive Hover Glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 px-4">
+      <section className="relative py-32 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <AnimatedSection delay={0.2}>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 glass hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300">
-                <CardContent className="p-12">
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <Globe className="h-16 w-16 text-primary mx-auto mb-6" />
-                  </motion.div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                    Ready to Transform Your Business?
-                  </h2>
-                  <p className="text-muted-foreground text-lg mb-8">
-                    Join thousands of businesses using AI voice agents to 
-                    improve customer experience.
-                  </p>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button size="lg" asChild className="group">
-                      <Link to="/register">
-                        Start Building Free
-                        <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </AnimatedSection>
+          <SpotlightCard className="p-16 text-center border-white/10 overflow-hidden">
+            <div className="absolute -top-24 -left-24 w-64 h-64 bg-cyan-500/20 rounded-full blur-[100px]" />
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/20 rounded-full blur-[100px]" />
+            
+            <Zap className="h-16 w-16 text-white mx-auto mb-8 animate-pulse" />
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for Lift Off?</h2>
+            <p className="text-slate-400 text-xl mb-10">
+              Join the businesses shaping the future of voice technology.
+            </p>
+            <Button size="lg" asChild className="bg-cyan-500 hover:bg-cyan-400 text-white rounded-full px-10 h-16 text-lg font-bold">
+              <Link to="/register">Create Your Agent Now</Link>
+            </Button>
+          </SpotlightCard>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Mic className="h-4 w-4 text-white" />
+      <footer className="relative z-10 border-t border-white/5 py-16 px-4">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <Mic className="h-5 w-5 text-white" />
             </div>
-            <span className="font-bold">VoiceAI Platform</span>
+            <span className="font-display font-bold text-xl tracking-tight">VoiceAI<span className="text-cyan-400">.</span></span>
           </div>
-          <p className="text-muted-foreground text-sm">
-            © 2024 AI Voice Agent Platform. All rights reserved.
+          <div className="flex gap-8 text-slate-400 text-sm">
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">Docs</a>
+          </div>
+          <p className="text-slate-500 text-sm">
+            © 2024 VoiceAI Platform. Built with Cartesia.
           </p>
         </div>
       </footer>
