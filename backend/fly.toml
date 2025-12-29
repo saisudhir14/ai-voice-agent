@@ -12,40 +12,28 @@ primary_region = 'sjc'
 [env]
   ENV = 'production'
   PORT = '8080'
+  AUTO_SEED = 'false'  # Disable auto-seeding in production to speed up startup
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = 'suspend'  # Suspend instead of stop for faster restarts
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1  # Keep at least 1 machine running to avoid cold starts
   processes = ['app']
 
-[[services]]
-  protocol = 'tcp'
-  internal_port = 8080
-  processes = ['app']
-
-  [[services.ports]]
-    port = 80
-    handlers = ['http']
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ['tls', 'http']
-
-  [services.concurrency]
+  [http_service.concurrency]
     type = 'connections'
     hard_limit = 250
     soft_limit = 200
 
-  [[services.tcp_checks]]
-    interval = '15s'
-    timeout = '2s'
-    grace_period = '5s'
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '30s'  # Give app time for DB connection and migrations
+    method = 'GET'
+    path = '/health'
 
 [[vm]]
-  memory = '256mb'
+  memory = '512mb'
   cpus = 1
-  memory_mb = 256
