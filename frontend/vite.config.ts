@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -20,22 +23,33 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks
+          // Vendor chunks - order matters! Check specific packages first
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react/jsx-runtime')) {
+            // Animation libraries (check before react to avoid conflicts)
+            if (id.includes('framer-motion') || id.includes('@react-spring')) {
+              return 'animation-vendor'
+            }
+            // React core - must be specific to avoid matching @react-spring, etc.
+            if (
+              id.includes('/react/') || 
+              id.includes('/react-dom/') || 
+              id.includes('/react/jsx-runtime') ||
+              id.includes('/react/jsx-dev-runtime') ||
+              (id.includes('react') && !id.includes('@') && !id.includes('react-'))
+            ) {
               return 'react-vendor'
             }
+            // Router
             if (id.includes('@tanstack/react-router') || id.includes('@tanstack/router')) {
               return 'router-vendor'
             }
+            // UI components
             if (id.includes('@radix-ui')) {
               return 'radix-vendor'
             }
+            // Icons
             if (id.includes('lucide-react')) {
               return 'icons-vendor'
-            }
-            if (id.includes('framer-motion') || id.includes('@react-spring')) {
-              return 'animation-vendor'
             }
             // Other node_modules go into vendor chunk
             return 'vendor'
