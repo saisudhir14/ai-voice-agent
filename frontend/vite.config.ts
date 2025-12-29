@@ -25,40 +25,10 @@ export default defineConfig({
     minify: 'esbuild',
     cssMinify: true,
     sourcemap: false,
-    // Optimize chunk splitting for better caching and parallel loading
+    // Let Vite handle chunking automatically to prevent React loading issues
+    // Manual chunking was causing React to not be available when vendor chunks tried to use it
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Separate vendor chunks for better caching
-          if (id.includes('node_modules')) {
-            // React core - critical, load first
-            if (id.includes('react') && (id.includes('/react/') || id.includes('/react-dom/'))) {
-              return 'react-vendor'
-            }
-            // Router - large but needed early
-            if (id.includes('@tanstack/react-router')) {
-              return 'router-vendor'
-            }
-            // Query - can load in parallel
-            if (id.includes('@tanstack/react-query')) {
-              return 'query-vendor'
-            }
-            // Animation library - can be lazy loaded
-            if (id.includes('framer-motion')) {
-              return 'animation-vendor'
-            }
-            // UI components - can load separately
-            if (id.includes('@radix-ui')) {
-              return 'ui-vendor'
-            }
-            // Icons - small, can be in main bundle
-            if (id.includes('lucide-react')) {
-              return 'icons-vendor'
-            }
-            // Everything else
-            return 'vendor'
-          }
-        },
         // Optimize chunk file names for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
