@@ -36,10 +36,12 @@ func (a *Analyzer) Analyze(ctx context.Context, text string, entityTypes []strin
 		Language: a.language,
 	}
 
-	// Only include entities filter if explicitly provided
-	if len(entityTypes) > 0 {
-		req.Entities = entityTypes
+	// Handle entity types: nil = detect all, []string{} = detect nothing, [types] = specific types
+	// We always set Entities to distinguish between nil (all) and [] (none)
+	if entityTypes != nil {
+		req.Entities = entityTypes // Empty slice means detect nothing
 	}
+	// If entityTypes is nil, we don't set Entities field, which means detect all
 
 	a.logger.Debug().
 		Str("text_preview", truncateText(text, 100)).

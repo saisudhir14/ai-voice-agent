@@ -52,7 +52,13 @@ function RegisterPage() {
 
     setIsLoading(true)
     try {
-      const response = await authApi.register(formData)
+      // Only send required fields to API (exclude confirmPassword)
+      const response = await authApi.register({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        company: formData.company || undefined,
+      })
       const { user, access_token, refresh_token } = response.data
       setAuth(user, access_token, refresh_token)
       toast.success('Registration complete. Welcome to VoiceAI.')

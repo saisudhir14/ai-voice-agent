@@ -1,10 +1,32 @@
 package security
 
+import "encoding/json"
+
 // AnalyzeRequest represents a request to the Presidio analyzer
 type AnalyzeRequest struct {
 	Text     string   `json:"text"`
 	Language string   `json:"language"`
-	Entities []string `json:"entities,omitempty"` // Optional: filter specific PII types
+	Entities []string `json:"entities,omitempty"` // nil/omitted = detect all, [] = detect nothing, [types] = specific types
+}
+
+// MarshalJSON customizes JSON marshaling to distinguish nil (detect all) from empty slice (detect nothing)
+func (r AnalyzeRequest) MarshalJSON() ([]byte, error) {
+	type Alias AnalyzeRequest
+	aux := &struct {
+		Entities *[]string `json:"entities,omitempty"` // Use pointer to distinguish nil from empty
+		*Alias
+	}{
+		Alias: (*Alias)(&r),
+	}
+	
+	// If Entities is nil, don't include it (detect all)
+	// If Entities is empty slice, include it as empty array (detect nothing)
+	// If Entities has values, include it (detect specific types)
+	if r.Entities != nil {
+		aux.Entities = &r.Entities
+	}
+	
+	return json.Marshal(aux)
 }
 
 // AnalyzeResult represents a detected PII entity

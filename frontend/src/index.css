@@ -35,7 +35,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     background-image: 
       radial-gradient(at 0% 0%, hsla(263, 70%, 50%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, hsla(199, 89% 48%, 0.15) 0px, transparent 50%);
+      radial-gradient(at 100% 100%, hsla(199, 89%, 48%, 0.15) 0px, transparent 50%);
   }
 
   h1, h2, h3, h4, h5, h6 {

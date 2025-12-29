@@ -47,7 +47,7 @@ export function GradientBackground({
       />
 
       <motion.div
-        className={`absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-pink-500 rounded-full blur-[100px] opacity-10`}
+        className={`absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-pink-500 rounded-full blur-[100px] ${opacity}`}
         animate={{
           x: [0, 30, 0],
           y: [0, 60, 0],
