@@ -63,7 +63,7 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
 
       {/* Core Orb - GPU accelerated */}
       <motion.div
-        className="relative w-3/4 h-3/4 bg-gradient-to-br from-primary via-accent to-purple-600 rounded-full shadow-[0_0_50px_rgba(139,92,246,0.5)] overflow-hidden"
+        className="relative w-3/4 h-3/4 bg-gradient-to-br from-primary via-accent to-orange-500 rounded-full shadow-[0_0_50px_rgba(249,115,22,0.5)] overflow-hidden"
         animate={{
           borderRadius: [
             "42% 58% 70% 30% / 45% 45% 55% 55%",

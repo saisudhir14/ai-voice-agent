@@ -25,13 +25,13 @@ const features = [
     icon: Sparkles,
     title: 'Contextual Intelligence',
     description: 'Agents that understand nuance, emotion, and complex instructions in real-time.',
-    color: 'text-purple-400',
+    color: 'text-orange-400',
   },
   {
     icon: Layers,
     title: 'Seamless Workflows',
     description: 'Connect your agent to any API, CRM, or database with zero-code integrations.',
-    color: 'text-pink-400',
+    color: 'text-amber-400',
   },
 ]
 
@@ -119,7 +119,7 @@ export function HomePage() {
                     transition={{ duration: 5, repeat: Infinity }}
                     className="absolute bottom-10 left-0 glass-plus p-4 rounded-2xl z-20"
                   >
-                    <div className="text-xs text-purple-400 font-mono mb-1">Accuracy</div>
+                    <div className="text-xs text-orange-400 font-mono mb-1">Accuracy</div>
                     <div className="text-xl font-bold text-white tracking-tight">99.2%</div>
                   </motion.div>
                 </div>
@@ -191,15 +191,15 @@ export function HomePage() {
                     <div className="h-2 w-2 rounded-full bg-cyan-400 mr-3" />
                     <span className="text-sm font-mono text-cyan-400">system.initialize()</span>
                   </div>
-                  <div className="h-12 w-full bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center px-4">
-                    <div className="h-2 w-2 rounded-full bg-purple-400 mr-3" />
-                    <span className="text-sm font-mono text-purple-400">voice.load("Cartesia_Sonic")</span>
+                  <div className="h-12 w-full bg-orange-500/10 border border-orange-500/20 rounded-xl flex items-center px-4">
+                    <div className="h-2 w-2 rounded-full bg-orange-400 mr-3" />
+                    <span className="text-sm font-mono text-orange-400">voice.load("Cartesia_Sonic")</span>
                   </div>
                 </div>
                 <div className="h-4 w-2/3 bg-white/5 rounded-full animate-pulse" />
               </div>
               {/* Interactive Hover Glow */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           </div>
         </div>
@@ -210,7 +210,7 @@ export function HomePage() {
         <div className="max-w-4xl mx-auto text-center">
           <SpotlightCard className="p-16 text-center border-white/10 overflow-hidden">
             <div className="absolute -top-24 -left-24 w-64 h-64 bg-cyan-500/20 rounded-full blur-[100px]" />
-            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/20 rounded-full blur-[100px]" />
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-orange-500/20 rounded-full blur-[100px]" />
             
             <Zap className="h-16 w-16 text-white mx-auto mb-8 animate-pulse" />
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for Lift Off?</h2>
@@ -228,7 +228,7 @@ export function HomePage() {
       <footer className="relative z-10 border-t border-white/5 py-16 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
               <Mic className="h-5 w-5 text-white" />
             </div>
             <span className="font-display font-bold text-xl tracking-tight">VoiceAI<span className="text-cyan-400">.</span></span>

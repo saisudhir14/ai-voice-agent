@@ -77,7 +77,7 @@ function RegisterPage() {
       <div className="relative z-10 w-full max-w-md mt-12">
         <AnimatedSection>
           <div className="text-center mb-10">
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mb-6 shadow-xl shadow-cyan-500/20">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center mb-6 shadow-xl shadow-cyan-500/20">
               <Mic className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tighter">Join the Collective</h1>

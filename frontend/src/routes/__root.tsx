@@ -40,7 +40,7 @@ function RootLayout() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
                 <Mic className="h-5 w-5 text-white" />
               </div>
               <span className="text-xl font-display font-bold tracking-tight text-white">
@@ -104,7 +104,7 @@ function RootLayout() {
               <SheetContent side="right" className="bg-nebula-deep border-white/5 text-slate-200">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-3 text-white">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center">
                       <Mic className="h-4 w-4 text-white" />
                     </div>
                     VoiceAI

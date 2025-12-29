@@ -31,7 +31,7 @@ const DEMO_AGENTS = [
     role: 'Sales Representative',
     description: 'Persuasive and knowledgeable product expert focused on conversion.',
     icon: ShoppingBag,
-    color: 'text-purple-400',
+    color: 'text-orange-400',
     transcript: "Based on your usage patterns, the Pro plan would actually save you 20% annually. Shall we switch?",
   },
   {
@@ -40,7 +40,7 @@ const DEMO_AGENTS = [
     role: 'Creative Assistant',
     description: 'Imaginative partner for brainstorming and content generation.',
     icon: Sparkles,
-    color: 'text-pink-400',
+    color: 'text-amber-400',
     transcript: "That's a fascinating concept! What if we explored the angle of sustainability in that narrative?",
   },
 ]
@@ -95,7 +95,7 @@ function ShowcasePage() {
           <div className="order-2 lg:order-1">
             <AnimatedSection delay={0.2} className="relative">
               <div className="glass-plus rounded-3xl p-8 md:p-12 aspect-square flex flex-col items-center justify-center relative overflow-hidden border-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-orange-500/5" />
                 
                 <OrbVisualizer 
                   size="lg" 
@@ -171,7 +171,7 @@ function ShowcasePage() {
             ))}
 
             <AnimatedSection delay={0.6}>
-              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20 text-center">
+              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-orange-500/10 border border-cyan-500/20 text-center">
                 <p className="text-slate-300 mb-4">Want to build your own custom agent?</p>
                 <Button asChild className="w-full bg-white text-black hover:bg-slate-200">
                   <Link to="/register">Start Building Free</Link>

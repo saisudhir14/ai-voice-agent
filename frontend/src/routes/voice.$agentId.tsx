@@ -327,8 +327,8 @@ export function VoicePage() {
       connecting: { text: 'Initiating neural link...', color: 'text-cyan-400' },
       ready: { text: 'Active - Listening', color: 'text-cyan-400' },
       listening: { text: 'User speaking...', color: 'text-cyan-400' },
-      processing: { text: 'Thinking...', color: 'text-purple-400' },
-      speaking: { text: 'Agent responding...', color: 'text-purple-400' },
+      processing: { text: 'Thinking...', color: 'text-orange-400' },
+      speaking: { text: 'Agent responding...', color: 'text-orange-400' },
       error: { text: 'Signal lost', color: 'text-red-400' },
     }
     return statusMap[status] || { text: '', color: '' }
@@ -422,7 +422,7 @@ export function VoicePage() {
                 animate={{ opacity: 1 }}
                 className="flex items-center justify-center gap-2"
               >
-                <Sparkles className="h-5 w-5 text-purple-400 animate-pulse" />
+                <Sparkles className="h-5 w-5 text-orange-400 animate-pulse" />
                 <span className="text-slate-400 font-mono tracking-widest text-xs uppercase">Synthesizing Voice...</span>
               </motion.div>
             ) : null}
@@ -441,7 +441,7 @@ export function VoicePage() {
                   "p-4 rounded-2xl text-sm transition-smooth",
                   msg.role === 'user'
                     ? "bg-white/5 text-slate-300 ml-auto rounded-tr-none border border-white/5"
-                    : "bg-purple-500/10 text-slate-200 mr-auto rounded-tl-none border border-purple-500/10"
+                    : "bg-orange-500/10 text-slate-200 mr-auto rounded-tl-none border border-orange-500/10"
                 )}
               >
                 <p>{msg.content}</p>
