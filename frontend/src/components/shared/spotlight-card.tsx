@@ -44,6 +44,8 @@ export const SpotlightCard = ({
               transparent 80%
             )
           `,
+          willChange: 'opacity',
+          transform: 'translateZ(0)', // GPU acceleration
         }}
       />
       <div

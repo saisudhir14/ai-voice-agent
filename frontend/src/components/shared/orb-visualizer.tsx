@@ -15,7 +15,7 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
 
   return (
     <div className={cn("relative flex items-center justify-center", sizes[size], className)}>
-      {/* Outer Glow */}
+      {/* Outer Glow - GPU accelerated */}
       <motion.div
         className="absolute inset-0 rounded-full bg-primary/20 blur-2xl"
         animate={{
@@ -27,9 +27,13 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
           repeat: Infinity,
           ease: "easeInOut",
         }}
+        style={{ 
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
+        }}
       />
       
-      {/* Dynamic Rings */}
+      {/* Dynamic Rings - GPU accelerated */}
       {[...Array(3)].map((_, i) => (
         <motion.div
           key={i}
@@ -50,10 +54,14 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
               ease: "easeInOut",
             }
           }}
+          style={{ 
+            willChange: 'transform',
+            transform: 'translateZ(0)',
+          }}
         />
       ))}
 
-      {/* Core Orb */}
+      {/* Core Orb - GPU accelerated */}
       <motion.div
         className="relative w-3/4 h-3/4 bg-gradient-to-br from-primary via-accent to-purple-600 rounded-full shadow-[0_0_50px_rgba(139,92,246,0.5)] overflow-hidden"
         animate={{
@@ -68,6 +76,10 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
           duration: 8,
           repeat: Infinity,
           ease: "easeInOut",
+        }}
+        style={{ 
+          willChange: 'border-radius',
+          transform: 'translateZ(0)',
         }}
       >
         {/* Inner Shimmer */}

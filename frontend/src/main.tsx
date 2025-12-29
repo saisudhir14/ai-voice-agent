@@ -16,13 +16,14 @@ const queryClient = new QueryClient({
   },
 })
 
-// Create router
+// Create router with optimized preloading for mobile
 const router = createRouter({ 
   routeTree,
   context: {
     queryClient,
   },
-  defaultPreload: 'intent',
+  // Only preload on hover/click, not on intent (reduces initial load)
+  defaultPreload: false,
 })
 
 // Register router for type safety

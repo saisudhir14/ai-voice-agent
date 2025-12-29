@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
+import { lazy, Suspense } from 'react'
 import { Mic, Zap, ArrowRight, MousePointer2, Sparkles, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  AnimatedSection, 
-  GradientBackground, 
-  SpotlightCard, 
-  OrbVisualizer 
-} from '@/components/shared'
+import { AnimatedSection, SpotlightCard } from '@/components/shared'
+
+// Lazy load heavy components for better initial load performance
+const GradientBackground = lazy(() => 
+  import('@/components/shared/gradient-background').then(m => ({ default: m.GradientBackground }))
+)
+const OrbVisualizer = lazy(() => 
+  import('@/components/shared/orb-visualizer').then(m => ({ default: m.OrbVisualizer }))
+)
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -44,7 +48,9 @@ const steps = [
 export function HomePage() {
   return (
     <div className="relative overflow-hidden min-h-screen bg-nebula-deep text-slate-200">
-      <GradientBackground intensity="high" />
+      <Suspense fallback={null}>
+        <GradientBackground intensity="high" />
+      </Suspense>
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4">
@@ -100,7 +106,9 @@ export function HomePage() {
                 <div className="relative aspect-square flex items-center justify-center">
                   {/* Decorative Elements */}
                   <div className="absolute inset-0 bg-cyan-500/10 rounded-full blur-[120px] animate-pulse" />
-                  <OrbVisualizer size="lg" className="z-10" />
+                  <Suspense fallback={<div className="w-64 h-64 rounded-full bg-primary/20 animate-pulse" />}>
+                    <OrbVisualizer size="lg" className="z-10" />
+                  </Suspense>
                   
                   {/* Floating Labels */}
                   <motion.div 

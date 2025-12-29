@@ -17,7 +17,7 @@ export function GradientBackground({
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-      {/* Dynamic Animated Blobs */}
+      {/* Dynamic Animated Blobs - GPU accelerated */}
       <motion.div
         className={`absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500 rounded-full blur-[120px] ${opacity}`}
         animate={{
@@ -29,6 +29,10 @@ export function GradientBackground({
           duration: 15,
           repeat: Infinity,
           ease: 'easeInOut',
+        }}
+        style={{ 
+          willChange: 'transform',
+          transform: 'translateZ(0)', // Force GPU acceleration
         }}
       />
       
@@ -44,6 +48,10 @@ export function GradientBackground({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
+        style={{ 
+          willChange: 'transform',
+          transform: 'translateZ(0)',
+        }}
       />
 
       <motion.div
@@ -56,6 +64,10 @@ export function GradientBackground({
           duration: 25,
           repeat: Infinity,
           ease: 'easeInOut',
+        }}
+        style={{ 
+          willChange: 'transform',
+          transform: 'translateZ(0)',
         }}
       />
 

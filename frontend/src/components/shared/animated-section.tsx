@@ -45,6 +45,10 @@ export function AnimatedSection({
       animate={inView ? 'visible' : 'hidden'}
       variants={variants}
       className={className}
+      style={{
+        willChange: inView ? 'transform, opacity' : 'auto',
+        transform: 'translateZ(0)', // GPU acceleration
+      }}
     >
       {children}
     </motion.div>
