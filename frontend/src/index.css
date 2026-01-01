@@ -10,19 +10,19 @@
     --card-foreground: 214 32% 91%;
     --popover: 222 47% 4%;
     --popover-foreground: 214 32% 91%;
-    --primary: 190 90% 50%;
+    --primary: 215 20% 65%;
     --primary-foreground: 210 40% 98%;
     --secondary: 217 32% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 32% 17%;
     --muted-foreground: 215 20% 65%;
-    --accent: 25 95% 53%;
+    --accent: 215 16% 47%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217 32% 17%;
     --input: 217 32% 17%;
-    --ring: 190 90% 50%;
+    --ring: 215 20% 65%;
     --radius: 1rem;
   }
 
@@ -33,9 +33,9 @@
   body {
     @apply bg-[#020617] text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(25, 95%, 53%, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, hsla(190, 90%, 50%, 0.15) 0px, transparent 50%);
+    background-image:
+      radial-gradient(at 0% 0%, hsla(215, 20%, 55%, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(215, 16%, 47%, 0.12) 0px, transparent 50%);
     /* Performance optimizations */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -99,7 +99,7 @@
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-slate-400 via-slate-300 to-slate-400 bg-clip-text text-transparent;
   }
 
   /* Glass effect */
@@ -126,7 +126,7 @@
   }
 
   .text-gradient-nebula {
-    @apply bg-gradient-to-r from-cyan-400 via-orange-500 to-amber-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-slate-300 via-slate-400 to-slate-500 bg-clip-text text-transparent;
   }
 
   .spotlight-mask {
@@ -217,15 +217,15 @@
 
   /* Glow effect */
   .glow {
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 20px rgba(148, 163, 184, 0.3);
   }
 
   .glow-primary {
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 0 30px rgba(148, 163, 184, 0.4);
   }
 
   .glow-accent {
-    box-shadow: 0 0 30px rgba(249, 115, 22, 0.4);
+    box-shadow: 0 0 30px rgba(100, 116, 139, 0.4);
   }
 
   /* Smooth transitions */

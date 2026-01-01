@@ -22,7 +22,7 @@ const DEMO_AGENTS = [
     role: 'Customer Support',
     description: 'Empathetic and efficient support agent that handles returns and FAQs.',
     icon: Headphones,
-    color: 'text-cyan-400',
+    color: 'text-slate-400',
     transcript: "I'd be happy to help you with that return. Could you please provide your order number?",
   },
   {
@@ -31,7 +31,7 @@ const DEMO_AGENTS = [
     role: 'Sales Representative',
     description: 'Persuasive and knowledgeable product expert focused on conversion.',
     icon: ShoppingBag,
-    color: 'text-orange-400',
+    color: 'text-slate-400',
     transcript: "Based on your usage patterns, the Pro plan would actually save you 20% annually. Shall we switch?",
   },
   {
@@ -40,7 +40,7 @@ const DEMO_AGENTS = [
     role: 'Creative Assistant',
     description: 'Imaginative partner for brainstorming and content generation.',
     icon: Sparkles,
-    color: 'text-amber-400',
+    color: 'text-slate-400',
     transcript: "That's a fascinating concept! What if we explored the angle of sustainability in that narrative?",
   },
 ]
@@ -78,7 +78,7 @@ function ShowcasePage() {
       <main className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-16">
           <AnimatedSection>
-            <Badge className="mb-6 bg-white/5 border-white/10 text-cyan-400 backdrop-blur-md px-4 py-1.5 rounded-full">
+            <Badge className="mb-6 bg-white/5 border-white/10 text-slate-400 backdrop-blur-md px-4 py-1.5 rounded-full">
               Showcase Gallery
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -95,7 +95,7 @@ function ShowcasePage() {
           <div className="order-2 lg:order-1">
             <AnimatedSection delay={0.2} className="relative">
               <div className="glass-plus rounded-3xl p-8 md:p-12 aspect-square flex flex-col items-center justify-center relative overflow-hidden border-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-orange-500/5" />
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-slate-500/5" />
                 
                 <OrbVisualizer 
                   size="lg" 
@@ -136,7 +136,7 @@ function ShowcasePage() {
             {DEMO_AGENTS.map((agent, index) => (
               <AnimatedSection key={agent.id} delay={0.1 * (index + 3)}>
                 <Card 
-                  className={`p-6 bg-white/5 border-white/10 hover:bg-white/10 transition-all cursor-pointer group ${activeAgent === agent.id ? 'ring-1 ring-cyan-500/50 bg-white/10' : ''}`}
+                  className={`p-6 bg-white/5 border-white/10 hover:bg-white/10 transition-all cursor-pointer group ${activeAgent === agent.id ? 'ring-1 ring-slate-500/50 bg-white/10' : ''}`}
                   onClick={() => handlePlay(agent.id)}
                 >
                   <div className="flex items-start gap-5">
@@ -153,7 +153,7 @@ function ShowcasePage() {
                       <p className="text-slate-400 text-sm leading-relaxed mb-4">
                         {agent.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-slate-500 group-hover:text-cyan-400 transition-colors">
+                      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-slate-500 group-hover:text-slate-400 transition-colors">
                         {activeAgent === agent.id && isPlaying ? (
                           <>
                             <Pause className="h-3 w-3" /> Pause Demo
@@ -171,7 +171,7 @@ function ShowcasePage() {
             ))}
 
             <AnimatedSection delay={0.6}>
-              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-orange-500/10 border border-cyan-500/20 text-center">
+              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-slate-500/10 to-slate-500/10 border border-slate-500/20 text-center">
                 <p className="text-slate-300 mb-4">Want to build your own custom agent?</p>
                 <Button asChild className="w-full bg-white text-black hover:bg-slate-200">
                   <Link to="/register">Start Building Free</Link>

@@ -63,7 +63,7 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
 
       {/* Core Orb - GPU accelerated */}
       <motion.div
-        className="relative w-3/4 h-3/4 bg-gradient-to-br from-primary via-accent to-orange-500 rounded-full shadow-[0_0_50px_rgba(249,115,22,0.5)] overflow-hidden"
+        className="relative w-3/4 h-3/4 bg-gradient-to-br from-slate-400 via-slate-500 to-slate-600 rounded-full shadow-[0_0_50px_rgba(100,116,139,0.5)] overflow-hidden"
         animate={{
           borderRadius: [
             "42% 58% 70% 30% / 45% 45% 55% 55%",
@@ -77,14 +77,14 @@ export const OrbVisualizer = ({ className, size = 'md' }: OrbVisualizerProps) =>
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        style={{ 
+        style={{
           willChange: 'border-radius',
           transform: 'translateZ(0)',
         }}
       >
         {/* Inner Shimmer */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-        <motion.div 
+        <motion.div
           className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent"
           animate={{
             opacity: [0.3, 0.6, 0.3],
