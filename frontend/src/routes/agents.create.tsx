@@ -217,8 +217,8 @@ export function CreateAgentPage() {
               >
                 <SpotlightCard className="p-8">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="h-10 w-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                      <Bot className="h-6 w-6 text-purple-400" />
+                    <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                      <Bot className="h-6 w-6 text-orange-400" />
                     </div>
                     <h3 className="text-xl font-bold text-white">Identity & Role</h3>
                   </div>
@@ -231,7 +231,7 @@ export function CreateAgentPage() {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="e.g., Nova Support Unit"
-                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-purple-500/50 focus:ring-purple-500/20 text-lg"
+                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-orange-500/50 focus:ring-orange-500/20 text-lg"
                       />
                       {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                     </div>
@@ -243,7 +243,7 @@ export function CreateAgentPage() {
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Brief summary of the agent's primary goal"
-                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-purple-500/50 focus:ring-purple-500/20"
+                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-orange-500/50 focus:ring-orange-500/20"
                       />
                     </div>
                   </div>

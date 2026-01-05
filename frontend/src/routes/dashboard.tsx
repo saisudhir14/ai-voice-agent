@@ -189,8 +189,8 @@ export function DashboardPage() {
                       className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                          <MessageSquare className="h-6 w-6 text-purple-400" />
+                        <div className="h-12 w-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                          <MessageSquare className="h-6 w-6 text-orange-400" />
                         </div>
                         <div>
                           <p className="font-bold text-white">{conv.agent?.name}</p>

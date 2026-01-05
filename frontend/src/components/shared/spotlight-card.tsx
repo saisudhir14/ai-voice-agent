@@ -40,7 +40,7 @@ export const SpotlightCard = ({
           background: useMotionTemplate`
             radial-gradient(
               650px circle at ${mouseX}px ${mouseY}px,
-              rgba(139, 92, 246, 0.15),
+              rgba(148, 163, 184, 0.15),
               transparent 80%
             )
           `,
