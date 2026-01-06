@@ -3,7 +3,8 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { authApi } from '@/lib/api'
 import { registerSchema, type RegisterInput } from '@/lib/schemas'
-import { Mic, Mail, Lock, User, Loader2, ArrowRight, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, User, Loader2, ArrowRight, ShieldCheck } from 'lucide-react'
+import { VoiceIcon } from '@/components/shared/voice-icon'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { 
@@ -77,9 +78,7 @@ function RegisterPage() {
       <div className="relative z-10 w-full max-w-md mt-12">
         <AnimatedSection>
           <div className="text-center mb-10">
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center mb-6 shadow-xl shadow-slate-500/20">
-              <Mic className="h-8 w-8 text-white" />
-            </div>
+            <VoiceIcon className="mx-auto h-16 w-16 text-white mb-6" />
             <h1 className="text-3xl font-bold text-white tracking-tighter">Join the Collective</h1>
             <p className="text-slate-500 mt-2">Initialize your creator account</p>
           </div>
