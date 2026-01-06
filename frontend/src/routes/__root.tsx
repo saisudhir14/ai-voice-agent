@@ -1,6 +1,7 @@
 import { createRootRoute, Outlet, Link, useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
-import { Mic, LayoutDashboard, Bot, MessageSquare, LogOut, Menu } from 'lucide-react'
+import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu } from 'lucide-react'
+import { VoiceIcon } from '@/components/shared/voice-icon'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -40,9 +41,7 @@ function RootLayout() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center shadow-lg shadow-slate-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Mic className="h-5 w-5 text-white" />
-              </div>
+              <VoiceIcon className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
               <span className="text-xl font-display font-bold tracking-tight text-white">
                 VoiceAI<span className="text-slate-400">.</span>
               </span>
@@ -104,9 +103,7 @@ function RootLayout() {
               <SheetContent side="right" className="bg-nebula-deep border-white/5 text-slate-200">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-3 text-white">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center">
-                      <Mic className="h-4 w-4 text-white" />
-                    </div>
+                    <VoiceIcon className="h-8 w-8 text-white" />
                     VoiceAI
                   </SheetTitle>
                 </SheetHeader>

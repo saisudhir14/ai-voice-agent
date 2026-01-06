@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { Mic, Zap, ArrowRight, MousePointer2, Sparkles, Layers } from 'lucide-react'
+import { Zap, ArrowRight, MousePointer2, Sparkles, Layers } from 'lucide-react'
+import { VoiceIcon } from '@/components/shared/voice-icon'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
@@ -16,10 +17,10 @@ export const Route = createFileRoute('/')({
 
 const features = [
   {
-    icon: Mic,
+    icon: VoiceIcon,
     title: 'Neural Voice Synthesis',
     description: 'Ultra-low latency voices that sound indistinguishable from humans, powered by Cartesia.',
-    color: 'text-slate-400',
+    color: 'text-white',
   },
   {
     icon: Sparkles,
@@ -143,9 +144,7 @@ export function HomePage() {
             {features.map((feature, index) => (
               <AnimatedSection key={index} delay={0.1 * index}>
                 <SpotlightCard>
-                  <div className={`h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mb-6`}>
-                    <feature.icon className={`h-6 w-6 ${feature.color}`} />
-                  </div>
+                  <feature.icon className={`h-12 w-12 mb-6 ${feature.color}`} />
                   <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
                   <p className="text-slate-400 leading-relaxed">{feature.description}</p>
                 </SpotlightCard>
@@ -228,9 +227,7 @@ export function HomePage() {
       <footer className="relative z-10 border-t border-white/5 py-16 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center shadow-lg shadow-slate-500/20">
-              <Mic className="h-5 w-5 text-white" />
-            </div>
+            <VoiceIcon className="h-10 w-10 text-white" />
             <span className="font-display font-bold text-xl tracking-tight">VoiceAI<span className="text-slate-400">.</span></span>
           </div>
           <div className="flex gap-8 text-slate-400 text-sm">

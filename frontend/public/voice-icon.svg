@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+  <rect x="1" y="10" width="2" height="4" rx="1">
+    <animate attributeName="height" values="4;10;4" dur="1s" repeatCount="indefinite" begin="0s" />
+    <animate attributeName="y" values="10;7;10" dur="1s" repeatCount="indefinite" begin="0s" />
+  </rect>
+  <rect x="5" y="7" width="2" height="10" rx="1">
+    <animate attributeName="height" values="10;16;10" dur="1s" repeatCount="indefinite" begin="0.1s" />
+    <animate attributeName="y" values="7;4;7" dur="1s" repeatCount="indefinite" begin="0.1s" />
+  </rect>
+  <rect x="9" y="4" width="2" height="16" rx="1">
+    <animate attributeName="height" values="16;22;16" dur="1s" repeatCount="indefinite" begin="0.2s" />
+    <animate attributeName="y" values="4;1;4" dur="1s" repeatCount="indefinite" begin="0.2s" />
+  </rect>
+  <rect x="13" y="7" width="2" height="10" rx="1">
+    <animate attributeName="height" values="10;16;10" dur="1s" repeatCount="indefinite" begin="0.15s" />
+    <animate attributeName="y" values="7;4;7" dur="1s" repeatCount="indefinite" begin="0.15s" />
+  </rect>
+  <rect x="17" y="5" width="2" height="14" rx="1">
+    <animate attributeName="height" values="14;20;14" dur="1s" repeatCount="indefinite" begin="0.05s" />
+    <animate attributeName="y" values="5;2;5" dur="1s" repeatCount="indefinite" begin="0.05s" />
+  </rect>
+  <rect x="21" y="10" width="2" height="4" rx="1">
+    <animate attributeName="height" values="4;10;4" dur="1s" repeatCount="indefinite" begin="0.25s" />
+    <animate attributeName="y" values="10;7;10" dur="1s" repeatCount="indefinite" begin="0.25s" />
+  </rect>
+</svg>
