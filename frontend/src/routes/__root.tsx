@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet, Link, useNavigate } from '@tanstack/react-router'
+import { createRootRoute, Outlet, Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu } from 'lucide-react'
 import { VoiceIcon } from '@/components/shared/voice-icon'
@@ -26,6 +26,12 @@ function RootLayout() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const navigate = useNavigate()
   const [sheetOpen, setSheetOpen] = useState(false)
+  const location = useRouterState({ select: (s) => s.location })
+  const isConsole = location.pathname.startsWith('/console')
+
+  if (isConsole) {
+    return <Outlet />
+  }
 
   const handleLogout = () => {
     logout()
