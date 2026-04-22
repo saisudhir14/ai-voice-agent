@@ -6,7 +6,7 @@ type IconProps = {
   fill?: string
   sw?: number
   style?: CSSProperties
-} & Omit<SVGProps<SVGSVGElement>, 'fill' | 'stroke'>
+} & Omit<SVGProps<SVGSVGElement>, 'fill' | 'stroke' | 'd'>
 
 type IconBaseProps = IconProps & { d: string | ReactNode }
 

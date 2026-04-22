@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { PageHeader } from '../shell/PageHeader'
-import { Card } from '../primitives/Card'
 import { Input } from '../primitives/Input'
 import { Button } from '../primitives/Button'
 import { EmptyState, LoadingState, ErrorState } from '../primitives/misc'

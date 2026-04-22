@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useNavigate, useRouter } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { ConsoleShell } from '@/console/shell/ConsoleShell'
 import type { NavId } from '@/console/shell/Sidebar'
 import type { CommandItem } from '@/console/shell/CommandPalette'
