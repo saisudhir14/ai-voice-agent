@@ -9,7 +9,7 @@ const COLORS = {
 
 type LatencyStackProps = LatencyBreakdown & { height?: number; showLabel?: boolean }
 export function LatencyStack({ stt, llm, tts, net, height = 8, showLabel = false }: LatencyStackProps) {
-  const total = stt + llm + tts + net
+  const total = (stt + llm + tts + net) || 1
   const parts = [{ v: stt, color: COLORS.stt, name: 'STT' }, { v: llm, color: COLORS.llm, name: 'LLM' }, { v: tts, color: COLORS.tts, name: 'TTS' }, { v: net, color: COLORS.net, name: 'Net' }]
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -24,7 +24,7 @@ export function LatencyStack({ stt, llm, tts, net, height = 8, showLabel = false
 type LatencyRidgeProps = { rows: LatencyBreakdown[]; height?: number }
 export function LatencyRidge({ rows, height = 80 }: LatencyRidgeProps) {
   if (!rows.length) return null
-  const max = Math.max(...rows.map((r) => r.stt + r.llm + r.tts + r.net))
+  const max = Math.max(...rows.map((r) => r.stt + r.llm + r.tts + r.net)) || 1
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height, width: '100%' }} aria-hidden="true">
       {rows.map((r, i) => {

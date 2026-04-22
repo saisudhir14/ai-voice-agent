@@ -15,6 +15,7 @@ export function ConversationsScreen() {
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const load = () => {
     setLoading(true)
@@ -36,7 +37,7 @@ export function ConversationsScreen() {
   const selected = conversations.find((c) => c.id === selectedId)
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this conversation?')) return
+    setConfirmDeleteId(null)
     setDeleting(id)
     try {
       await consoleConversationsApi.delete(id)
@@ -115,9 +116,18 @@ export function ConversationsScreen() {
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <span style={{ fontSize: 12, color: 'var(--lattice-text-2)' }}>{fmtDate(selected.started_at)}</span>
                 <span style={{ fontFamily: 'var(--lattice-mono)', fontSize: 12 }}>{formatDuration(selected.duration_secs ?? 0)}</span>
-                <Button variant="ghost" size="sm" onClick={() => handleDelete(selected.id)} disabled={deleting === selected.id} style={{ color: 'var(--lattice-danger)' }}>
-                  <Icon.trash size={13} />
-                </Button>
+                {confirmDeleteId === selected.id ? (
+                  <>
+                    <Button variant="ghost" size="sm" onClick={() => setConfirmDeleteId(null)}>Cancel</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleDelete(selected.id)} disabled={deleting === selected.id} style={{ color: 'var(--lattice-danger)' }}>
+                      {deleting === selected.id ? '…' : 'Delete'}
+                    </Button>
+                  </>
+                ) : (
+                  <Button variant="ghost" size="sm" onClick={() => setConfirmDeleteId(selected.id)} disabled={deleting === selected.id} style={{ color: 'var(--lattice-danger)' }}>
+                    <Icon.trash size={13} />
+                  </Button>
+                )}
                 <Button variant="ghost" size="sm" onClick={() => setSelectedId(null)}><Icon.close size={13} /></Button>
               </div>
             </div>

@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 type AreaChartProps = {
   data: number[]
   width?: number
@@ -8,6 +10,7 @@ type AreaChartProps = {
 }
 
 export function AreaChart({ data, width = 600, height = 180, color = 'var(--lattice-accent)', xLabels = [], yTicks = 4 }: AreaChartProps) {
+  const uid = useId()
   if (!data?.length) return null
   const padL = 40, padR = 10, padT = 10, padB = 24
   const w = width - padL - padR
@@ -15,10 +18,11 @@ export function AreaChart({ data, width = 600, height = 180, color = 'var(--latt
   const max = Math.max(...data)
   const min = Math.min(...data, 0)
   const range = max - min || 1
-  const pts = data.map((v, i) => [padL + (i / (data.length - 1)) * w, padT + h - ((v - min) / range) * h] as const)
+  const xPos = (i: number, len: number) => padL + (len > 1 ? i / (len - 1) : 0.5) * w
+  const pts = data.map((v, i) => [xPos(i, data.length), padT + h - ((v - min) / range) * h] as const)
   const path = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')
   const area = `${path} L${padL + w} ${padT + h} L${padL} ${padT + h} Z`
-  const gid = `ar-${Math.random().toString(36).slice(2, 8)}`
+  const gid = `ar${uid.replace(/:/g, '-')}`
   const ticks = Array.from({ length: yTicks + 1 }, (_, i) => min + (range * i) / yTicks)
   return (
     <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ display: 'block' }}>
@@ -38,7 +42,7 @@ export function AreaChart({ data, width = 600, height = 180, color = 'var(--latt
         )
       })}
       {xLabels.map((label, i) => (
-        <text key={i} x={padL + (i / (xLabels.length - 1)) * w} y={height - 8} textAnchor="middle" fontSize="10" fill="var(--lattice-text-3)" fontFamily="var(--lattice-mono)">{label}</text>
+        <text key={i} x={xPos(i, xLabels.length)} y={height - 8} textAnchor="middle" fontSize="10" fill="var(--lattice-text-3)" fontFamily="var(--lattice-mono)">{label}</text>
       ))}
       <path d={area} fill={`url(#${gid})`} />
       <path d={path} fill="none" stroke={color} strokeWidth="1.75" strokeLinejoin="round" />

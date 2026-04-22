@@ -5,7 +5,7 @@ export function BarChart({ data, width = 600, height = 180, color = 'var(--latti
   const padL = 40, padR = 10, padT = 10, padB = 24
   const w = width - padL - padR
   const h = height - padT - padB
-  const max = Math.max(...data)
+  const max = Math.max(...data) || 1
   const gap = 3
   const bw = w / data.length - gap
   return (

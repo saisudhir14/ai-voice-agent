@@ -11,8 +11,9 @@ export function useKeyboardShortcut(
     const listener = (e: KeyboardEvent) => {
       const matchesKey = e.key.toLowerCase() === key.toLowerCase()
       const matchesMeta = opts.meta ? e.metaKey || e.ctrlKey : true
+      const matchesCtrl = opts.ctrl ? e.ctrlKey : true
       const matchesShift = opts.shift ? e.shiftKey : true
-      if (matchesKey && matchesMeta && matchesShift) {
+      if (matchesKey && matchesMeta && matchesCtrl && matchesShift) {
         if (opts.preventDefault !== false) e.preventDefault()
         handler(e)
       }

@@ -16,6 +16,7 @@ export function AgentsScreen() {
   const [query, setQuery] = useState('')
   const [toggling, setToggling] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const load = () => {
     setLoading(true)
@@ -45,7 +46,7 @@ export function AgentsScreen() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this agent? This cannot be undone.')) return
+    setConfirmDeleteId(null)
     setDeletingId(id)
     try {
       await consoleAgentsApi.delete(id)
@@ -133,9 +134,18 @@ export function AgentsScreen() {
                         <a href={`/agents/${agent.id}`} style={{ display: 'inline-flex', alignItems: 'center', padding: '0 10px', height: 28, background: 'transparent', border: '1px solid var(--lattice-border)', borderRadius: 'var(--lattice-radius)', fontSize: 12.5, color: 'var(--lattice-text)', textDecoration: 'none', fontWeight: 500 }}>
                           <Icon.edit size={12} style={{ marginRight: 4 }} /> Edit
                         </a>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(agent.id)} disabled={deletingId === agent.id} title="Delete agent" style={{ color: 'var(--lattice-danger)' }}>
-                          <Icon.trash size={13} />
-                        </Button>
+                        {confirmDeleteId === agent.id ? (
+                          <>
+                            <Button variant="ghost" size="sm" onClick={() => setConfirmDeleteId(null)}>Cancel</Button>
+                            <Button variant="ghost" size="sm" onClick={() => handleDelete(agent.id)} disabled={deletingId === agent.id} style={{ color: 'var(--lattice-danger)' }}>
+                              {deletingId === agent.id ? '…' : 'Delete'}
+                            </Button>
+                          </>
+                        ) : (
+                          <Button variant="ghost" size="sm" onClick={() => setConfirmDeleteId(agent.id)} disabled={deletingId === agent.id} title="Delete agent" style={{ color: 'var(--lattice-danger)' }}>
+                            <Icon.trash size={13} />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
