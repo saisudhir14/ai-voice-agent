@@ -33,13 +33,9 @@ export function Select({ value, onChange, options, style }: SelectProps) {
       }}
     >
       {options.map((o) => {
-        const value = typeof o === 'string' ? o : o.value
+        const val = typeof o === 'string' ? o : o.value
         const label = typeof o === 'string' ? o : o.label
-        return (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        )
+        return <option key={val} value={val}>{label}</option>
       })}
     </select>
   )

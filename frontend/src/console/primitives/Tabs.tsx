@@ -1,10 +1,6 @@
 import type { CSSProperties } from 'react'
 
-export type TabDef = {
-  value: string
-  label: string
-  count?: number
-}
+export type TabDef = { value: string; label: string; count?: number }
 
 type TabsProps = {
   tabs: TabDef[]
@@ -15,16 +11,7 @@ type TabsProps = {
 
 export function Tabs({ tabs, value, onChange, style }: TabsProps) {
   return (
-    <div
-      role="tablist"
-      style={{
-        display: 'flex',
-        gap: 4,
-        borderBottom: '1px solid var(--lattice-border)',
-        overflowX: 'auto',
-        ...style,
-      }}
-    >
+    <div role="tablist" style={{ display: 'flex', gap: 4, borderBottom: '1px solid var(--lattice-border)', overflowX: 'auto', ...style }}>
       {tabs.map((t) => {
         const active = t.value === value
         return (
@@ -52,16 +39,7 @@ export function Tabs({ tabs, value, onChange, style }: TabsProps) {
           >
             {t.label}
             {t.count != null && (
-              <span
-                style={{
-                  background: 'var(--lattice-surface-2)',
-                  color: 'var(--lattice-text-2)',
-                  padding: '1px 6px',
-                  borderRadius: 10,
-                  fontSize: 10.5,
-                  fontWeight: 600,
-                }}
-              >
+              <span style={{ background: 'var(--lattice-surface-2)', color: 'var(--lattice-text-2)', padding: '1px 6px', borderRadius: 10, fontSize: 10.5, fontWeight: 600 }}>
                 {t.count}
               </span>
             )}

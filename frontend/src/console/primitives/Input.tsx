@@ -11,15 +11,7 @@ export function Input({ icon: IconEl, suffix, style, wrapStyle, ...rest }: Input
   return (
     <div style={{ position: 'relative', display: 'flex', alignItems: 'center', ...wrapStyle }}>
       {IconEl && (
-        <IconEl
-          size={14}
-          style={{
-            position: 'absolute',
-            left: 10,
-            color: 'var(--lattice-text-3)',
-            pointerEvents: 'none',
-          }}
-        />
+        <IconEl size={14} style={{ position: 'absolute', left: 10, color: 'var(--lattice-text-3)', pointerEvents: 'none' }} />
       )}
       <input
         style={{
@@ -35,18 +27,12 @@ export function Input({ icon: IconEl, suffix, style, wrapStyle, ...rest }: Input
           transition: 'border-color 120ms',
           ...style,
         }}
-        onFocus={(e) => {
-          e.target.style.borderColor = 'var(--lattice-accent)'
-        }}
-        onBlur={(e) => {
-          e.target.style.borderColor = 'var(--lattice-border)'
-        }}
+        onFocus={(e) => { e.target.style.borderColor = 'var(--lattice-accent)' }}
+        onBlur={(e) => { e.target.style.borderColor = 'var(--lattice-border)' }}
         {...rest}
       />
       {suffix && (
-        <span style={{ position: 'absolute', right: 10, color: 'var(--lattice-text-3)', fontSize: 11 }}>
-          {suffix}
-        </span>
+        <span style={{ position: 'absolute', right: 10, color: 'var(--lattice-text-3)', fontSize: 11 }}>{suffix}</span>
       )}
     </div>
   )

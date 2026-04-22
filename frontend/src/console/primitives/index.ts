@@ -7,15 +7,4 @@ export { Select } from './Select'
 export type { SelectOption } from './Select'
 export { Tabs } from './Tabs'
 export type { TabDef } from './Tabs'
-export {
-  StatusDot,
-  KBD,
-  Progress,
-  Avatar,
-  SegControl,
-  ConfigRow,
-  EmptyState,
-  Skeleton,
-  LoadingState,
-  ErrorState,
-} from './misc'
+export { StatusDot, KBD, Progress, Avatar, SegControl, ConfigRow, EmptyState, Skeleton, LoadingState, ErrorState } from './misc'

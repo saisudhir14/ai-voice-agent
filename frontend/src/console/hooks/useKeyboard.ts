@@ -25,9 +25,7 @@ export function useKeyboardShortcut(
 export function useEscape(handler: () => void, enabled = true) {
   useEffect(() => {
     if (!enabled) return
-    const listener = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handler()
-    }
+    const listener = (e: KeyboardEvent) => { if (e.key === 'Escape') handler() }
     window.addEventListener('keydown', listener)
     return () => window.removeEventListener('keydown', listener)
   }, [enabled, handler])

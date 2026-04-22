@@ -7,14 +7,7 @@ type SparklineProps = {
   strokeWidth?: number
 }
 
-export function Sparkline({
-  data,
-  width = 120,
-  height = 32,
-  color = 'var(--lattice-accent)',
-  fill = true,
-  strokeWidth = 1.5,
-}: SparklineProps) {
+export function Sparkline({ data, width = 120, height = 32, color = 'var(--lattice-accent)', fill = true, strokeWidth = 1.5 }: SparklineProps) {
   if (!data?.length) return null
   const max = Math.max(...data)
   const min = Math.min(...data)

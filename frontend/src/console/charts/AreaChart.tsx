@@ -7,19 +7,9 @@ type AreaChartProps = {
   yTicks?: number
 }
 
-export function AreaChart({
-  data,
-  width = 600,
-  height = 180,
-  color = 'var(--lattice-accent)',
-  xLabels = [],
-  yTicks = 4,
-}: AreaChartProps) {
+export function AreaChart({ data, width = 600, height = 180, color = 'var(--lattice-accent)', xLabels = [], yTicks = 4 }: AreaChartProps) {
   if (!data?.length) return null
-  const padL = 40
-  const padR = 10
-  const padT = 10
-  const padB = 24
+  const padL = 40, padR = 10, padT = 10, padB = 24
   const w = width - padL - padR
   const h = height - padT - padB
   const max = Math.max(...data)
@@ -43,28 +33,13 @@ export function AreaChart({
         return (
           <g key={i}>
             <line x1={padL} y1={y} x2={padL + w} y2={y} stroke="var(--lattice-border)" strokeDasharray="3 3" />
-            <text x={padL - 8} y={y + 3} textAnchor="end" fontSize="10" fill="var(--lattice-text-3)" fontFamily="var(--lattice-mono)">
-              {Math.round(t)}
-            </text>
+            <text x={padL - 8} y={y + 3} textAnchor="end" fontSize="10" fill="var(--lattice-text-3)" fontFamily="var(--lattice-mono)">{Math.round(t)}</text>
           </g>
         )
       })}
-      {xLabels.map((label, i) => {
-        const x = padL + (i / (xLabels.length - 1)) * w
-        return (
-          <text
-            key={i}
-            x={x}
-            y={height - 8}
-            textAnchor="middle"
-            fontSize="10"
-            fill="var(--lattice-text-3)"
-            fontFamily="var(--lattice-mono)"
-          >
-            {label}
-          </text>
-        )
-      })}
+      {xLabels.map((label, i) => (
+        <text key={i} x={padL + (i / (xLabels.length - 1)) * w} y={height - 8} textAnchor="middle" fontSize="10" fill="var(--lattice-text-3)" fontFamily="var(--lattice-mono)">{label}</text>
+      ))}
       <path d={area} fill={`url(#${gid})`} />
       <path d={path} fill="none" stroke={color} strokeWidth="1.75" strokeLinejoin="round" />
       {pts.length > 0 && <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill={color} />}

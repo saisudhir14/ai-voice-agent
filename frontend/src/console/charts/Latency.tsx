@@ -1,14 +1,4 @@
-export type LatencyBreakdown = {
-  stt: number
-  llm: number
-  tts: number
-  net: number
-}
-
-type LatencyStackProps = LatencyBreakdown & {
-  height?: number
-  showLabel?: boolean
-}
+export type LatencyBreakdown = { stt: number; llm: number; tts: number; net: number }
 
 const COLORS = {
   stt: 'oklch(0.72 0.12 200)',
@@ -17,51 +7,21 @@ const COLORS = {
   net: 'var(--lattice-text-3)',
 } as const
 
+type LatencyStackProps = LatencyBreakdown & { height?: number; showLabel?: boolean }
 export function LatencyStack({ stt, llm, tts, net, height = 8, showLabel = false }: LatencyStackProps) {
   const total = stt + llm + tts + net
-  const parts = [
-    { v: stt, color: COLORS.stt, name: 'STT' },
-    { v: llm, color: COLORS.llm, name: 'LLM' },
-    { v: tts, color: COLORS.tts, name: 'TTS' },
-    { v: net, color: COLORS.net, name: 'Net' },
-  ]
+  const parts = [{ v: stt, color: COLORS.stt, name: 'STT' }, { v: llm, color: COLORS.llm, name: 'LLM' }, { v: tts, color: COLORS.tts, name: 'TTS' }, { v: net, color: COLORS.net, name: 'Net' }]
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          height,
-          borderRadius: 3,
-          overflow: 'hidden',
-          background: 'var(--lattice-surface-2)',
-        }}
-      >
-        {parts.map((p) => (
-          <div
-            key={p.name}
-            title={`${p.name}: ${p.v}ms`}
-            style={{ width: `${(p.v / total) * 100}%`, background: p.color, transition: 'width 200ms' }}
-          />
-        ))}
+      <div style={{ flex: 1, display: 'flex', height, borderRadius: 3, overflow: 'hidden', background: 'var(--lattice-surface-2)' }}>
+        {parts.map((p) => <div key={p.name} title={`${p.name}: ${p.v}ms`} style={{ width: `${(p.v / total) * 100}%`, background: p.color, transition: 'width 200ms' }} />)}
       </div>
-      {showLabel && (
-        <span
-          className="lattice-mono"
-          style={{ fontSize: 11, color: 'var(--lattice-text-2)', minWidth: 52, textAlign: 'right' }}
-        >
-          {total}ms
-        </span>
-      )}
+      {showLabel && <span className="lattice-mono" style={{ fontSize: 11, color: 'var(--lattice-text-2)', minWidth: 52, textAlign: 'right' }}>{total}ms</span>}
     </div>
   )
 }
 
-type LatencyRidgeProps = {
-  rows: LatencyBreakdown[]
-  height?: number
-}
-
+type LatencyRidgeProps = { rows: LatencyBreakdown[]; height?: number }
 export function LatencyRidge({ rows, height = 80 }: LatencyRidgeProps) {
   if (!rows.length) return null
   const max = Math.max(...rows.map((r) => r.stt + r.llm + r.tts + r.net))

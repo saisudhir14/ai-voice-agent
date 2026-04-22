@@ -13,41 +13,14 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const VARIANT_STYLES: Record<ButtonVariant, CSSProperties> = {
-  default: {
-    background: 'var(--lattice-accent)',
-    color: 'var(--lattice-accent-fg)',
-    boxShadow: 'var(--lattice-shadow-sm)',
-  },
-  secondary: {
-    background: 'var(--lattice-surface)',
-    color: 'var(--lattice-text)',
-    border: '1px solid var(--lattice-border)',
-    boxShadow: 'var(--lattice-shadow-sm)',
-  },
-  ghost: {
-    background: 'transparent',
-    color: 'var(--lattice-text-2)',
-  },
-  outline: {
-    background: 'transparent',
-    color: 'var(--lattice-text)',
-    border: '1px solid var(--lattice-border)',
-  },
-  danger: {
-    background: 'var(--lattice-danger)',
-    color: '#fff',
-  },
+  default: { background: 'var(--lattice-accent)', color: 'var(--lattice-accent-fg)', boxShadow: 'var(--lattice-shadow-sm)' },
+  secondary: { background: 'var(--lattice-surface)', color: 'var(--lattice-text)', border: '1px solid var(--lattice-border)', boxShadow: 'var(--lattice-shadow-sm)' },
+  ghost: { background: 'transparent', color: 'var(--lattice-text-2)' },
+  outline: { background: 'transparent', color: 'var(--lattice-text)', border: '1px solid var(--lattice-border)' },
+  danger: { background: 'var(--lattice-danger)', color: '#fff' },
 }
 
-export function Button({
-  variant = 'default',
-  size = 'md',
-  icon: IconEl,
-  iconRight: IconRight,
-  children,
-  style,
-  ...rest
-}: ButtonProps) {
+export function Button({ variant = 'default', size = 'md', icon: IconEl, iconRight: IconRight, children, style, ...rest }: ButtonProps) {
   const base: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -65,7 +38,6 @@ export function Button({
     height: size === 'sm' ? 28 : size === 'lg' ? 38 : 32,
     opacity: rest.disabled ? 0.6 : 1,
   }
-
   return (
     <button style={{ ...base, ...VARIANT_STYLES[variant], ...style }} {...rest}>
       {IconEl && <IconEl size={14} />}

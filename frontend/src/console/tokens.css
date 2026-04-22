@@ -142,48 +142,25 @@
 }
 
 @keyframes lattice-pulse-ring {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.8); opacity: 0; }
 }
 @keyframes lattice-blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 @keyframes lattice-shimmer-bar {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(250%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
 }
 @keyframes lattice-wave-bar {
-  0%, 100% {
-    transform: scaleY(0.3);
-  }
-  50% {
-    transform: scaleY(1);
-  }
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
 }
 
-/* Mobile breakpoints: collapse multi-column grids on small screens */
 @media (max-width: 1024px) {
-  .lattice-root .lattice-hide-md {
-    display: none !important;
-  }
+  .lattice-root .lattice-hide-md { display: none !important; }
 }
 @media (max-width: 768px) {
-  .lattice-root .lattice-hide-sm {
-    display: none !important;
-  }
+  .lattice-root .lattice-hide-sm { display: none !important; }
 }

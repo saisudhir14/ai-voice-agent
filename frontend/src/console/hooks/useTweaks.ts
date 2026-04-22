@@ -5,20 +5,9 @@ export type Accent = 'emerald' | 'blue' | 'violet' | 'orange'
 export type Density = 'compact' | 'balanced' | 'comfortable'
 export type SidebarMode = 'rail' | 'expanded'
 
-export type Tweaks = {
-  theme: Theme
-  accent: Accent
-  density: Density
-  sidebar: SidebarMode
-}
+export type Tweaks = { theme: Theme; accent: Accent; density: Density; sidebar: SidebarMode }
 
-const DEFAULT_TWEAKS: Tweaks = {
-  theme: 'light',
-  accent: 'emerald',
-  density: 'balanced',
-  sidebar: 'expanded',
-}
-
+const DEFAULT_TWEAKS: Tweaks = { theme: 'light', accent: 'emerald', density: 'balanced', sidebar: 'expanded' }
 const STORAGE_KEY = 'lattice.tweaks'
 
 function readTweaks(): Tweaks {
@@ -26,8 +15,7 @@ function readTweaks(): Tweaks {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY)
     if (!raw) return DEFAULT_TWEAKS
-    const parsed = JSON.parse(raw) as Partial<Tweaks>
-    return { ...DEFAULT_TWEAKS, ...parsed }
+    return { ...DEFAULT_TWEAKS, ...(JSON.parse(raw) as Partial<Tweaks>) }
   } catch {
     return DEFAULT_TWEAKS
   }
@@ -37,11 +25,7 @@ export function useTweaks() {
   const [tweaks, setTweaks] = useState<Tweaks>(readTweaks)
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tweaks))
-    } catch {
-      // ignore quota errors
-    }
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tweaks)) } catch { /* ignore */ }
   }, [tweaks])
 
   const update = useCallback(<K extends keyof Tweaks>(key: K, value: Tweaks[K]) => {
