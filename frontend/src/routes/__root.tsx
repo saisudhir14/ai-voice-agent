@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet, Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
-import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu } from 'lucide-react'
+import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu, Terminal } from 'lucide-react'
 import { VoiceIcon } from '@/components/shared/voice-icon'
 import { Button } from '@/components/ui/button'
 import {
@@ -73,13 +73,19 @@ function RootLayout() {
                   </div>
                   
                   <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                    <Button variant="ghost" size="sm" asChild className="rounded-full hover:bg-white/10 hover:text-white text-slate-400 gap-1.5">
+                      <Link to="/console/dashboard">
+                        <Terminal className="h-3.5 w-3.5" />
+                        Console
+                      </Link>
+                    </Button>
                     <div className="flex flex-col items-end mr-2">
                       <span className="text-xs font-medium text-white">{user?.name}</span>
                       <span className="text-[10px] text-slate-500 uppercase tracking-widest">Pro Member</span>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={handleLogout}
                       className="rounded-full hover:bg-red-500/10 hover:text-red-400 transition-colors"
                     >
@@ -131,6 +137,17 @@ function RootLayout() {
                         </Button>
                       ))}
                       <div className="mt-auto pt-8 border-t border-white/5">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start rounded-xl h-14 text-lg text-slate-400"
+                          asChild
+                          onClick={() => setSheetOpen(false)}
+                        >
+                          <Link to="/console/dashboard">
+                            <Terminal className="h-5 w-5 mr-3" />
+                            Console
+                          </Link>
+                        </Button>
                         <div className="px-4 py-4 mb-4 bg-white/5 rounded-2xl">
                           <div className="text-sm font-bold text-white">{user?.name}</div>
                           <div className="text-xs text-slate-500">{user?.email}</div>
