@@ -14,10 +14,19 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConversationsRouteImport } from './routes/conversations'
+import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConsoleIndexRouteImport } from './routes/console.index'
 import { Route as AgentsIndexRouteImport } from './routes/agents.index'
 import { Route as VoiceAgentIdRouteImport } from './routes/voice.$agentId'
+import { Route as ConsoleNumbersRouteImport } from './routes/console.numbers'
+import { Route as ConsoleLiveRouteImport } from './routes/console.live'
+import { Route as ConsoleKeysRouteImport } from './routes/console.keys'
+import { Route as ConsoleDashboardRouteImport } from './routes/console.dashboard'
+import { Route as ConsoleConversationsRouteImport } from './routes/console.conversations'
+import { Route as ConsoleAnalyticsRouteImport } from './routes/console.analytics'
+import { Route as ConsoleAgentsRouteImport } from './routes/console.agents'
 import { Route as AgentsCreateRouteImport } from './routes/agents.create'
 import { Route as AgentsAgentIdRouteImport } from './routes/agents.$agentId'
 
@@ -46,6 +55,11 @@ const ConversationsRoute = ConversationsRouteImport.update({
   path: '/conversations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsoleRoute = ConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AgentsRoute = AgentsRouteImport.update({
   id: '/agents',
   path: '/agents',
@@ -56,6 +70,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsoleIndexRoute = ConsoleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConsoleRoute,
+} as any)
 const AgentsIndexRoute = AgentsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -65,6 +84,41 @@ const VoiceAgentIdRoute = VoiceAgentIdRouteImport.update({
   id: '/voice/$agentId',
   path: '/voice/$agentId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleNumbersRoute = ConsoleNumbersRouteImport.update({
+  id: '/numbers',
+  path: '/numbers',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleLiveRoute = ConsoleLiveRouteImport.update({
+  id: '/live',
+  path: '/live',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleKeysRoute = ConsoleKeysRouteImport.update({
+  id: '/keys',
+  path: '/keys',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleDashboardRoute = ConsoleDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleConversationsRoute = ConsoleConversationsRouteImport.update({
+  id: '/conversations',
+  path: '/conversations',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleAnalyticsRoute = ConsoleAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleAgentsRoute = ConsoleAgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => ConsoleRoute,
 } as any)
 const AgentsCreateRoute = AgentsCreateRouteImport.update({
   id: '/create',
@@ -80,6 +134,7 @@ const AgentsAgentIdRoute = AgentsAgentIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agents': typeof AgentsRouteWithChildren
+  '/console': typeof ConsoleRouteWithChildren
   '/conversations': typeof ConversationsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
@@ -87,8 +142,16 @@ export interface FileRoutesByFullPath {
   '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
+  '/console/agents': typeof ConsoleAgentsRoute
+  '/console/analytics': typeof ConsoleAnalyticsRoute
+  '/console/conversations': typeof ConsoleConversationsRoute
+  '/console/dashboard': typeof ConsoleDashboardRoute
+  '/console/keys': typeof ConsoleKeysRoute
+  '/console/live': typeof ConsoleLiveRoute
+  '/console/numbers': typeof ConsoleNumbersRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents/': typeof AgentsIndexRoute
+  '/console/': typeof ConsoleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,13 +162,22 @@ export interface FileRoutesByTo {
   '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
+  '/console/agents': typeof ConsoleAgentsRoute
+  '/console/analytics': typeof ConsoleAnalyticsRoute
+  '/console/conversations': typeof ConsoleConversationsRoute
+  '/console/dashboard': typeof ConsoleDashboardRoute
+  '/console/keys': typeof ConsoleKeysRoute
+  '/console/live': typeof ConsoleLiveRoute
+  '/console/numbers': typeof ConsoleNumbersRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents': typeof AgentsIndexRoute
+  '/console': typeof ConsoleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/agents': typeof AgentsRouteWithChildren
+  '/console': typeof ConsoleRouteWithChildren
   '/conversations': typeof ConversationsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
@@ -113,14 +185,23 @@ export interface FileRoutesById {
   '/showcase': typeof ShowcaseRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
+  '/console/agents': typeof ConsoleAgentsRoute
+  '/console/analytics': typeof ConsoleAnalyticsRoute
+  '/console/conversations': typeof ConsoleConversationsRoute
+  '/console/dashboard': typeof ConsoleDashboardRoute
+  '/console/keys': typeof ConsoleKeysRoute
+  '/console/live': typeof ConsoleLiveRoute
+  '/console/numbers': typeof ConsoleNumbersRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents/': typeof AgentsIndexRoute
+  '/console/': typeof ConsoleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/agents'
+    | '/console'
     | '/conversations'
     | '/dashboard'
     | '/login'
@@ -128,8 +209,16 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
+    | '/console/agents'
+    | '/console/analytics'
+    | '/console/conversations'
+    | '/console/dashboard'
+    | '/console/keys'
+    | '/console/live'
+    | '/console/numbers'
     | '/voice/$agentId'
     | '/agents/'
+    | '/console/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,12 +229,21 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
+    | '/console/agents'
+    | '/console/analytics'
+    | '/console/conversations'
+    | '/console/dashboard'
+    | '/console/keys'
+    | '/console/live'
+    | '/console/numbers'
     | '/voice/$agentId'
     | '/agents'
+    | '/console'
   id:
     | '__root__'
     | '/'
     | '/agents'
+    | '/console'
     | '/conversations'
     | '/dashboard'
     | '/login'
@@ -153,13 +251,22 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/agents/$agentId'
     | '/agents/create'
+    | '/console/agents'
+    | '/console/analytics'
+    | '/console/conversations'
+    | '/console/dashboard'
+    | '/console/keys'
+    | '/console/live'
+    | '/console/numbers'
     | '/voice/$agentId'
     | '/agents/'
+    | '/console/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AgentsRoute: typeof AgentsRouteWithChildren
+  ConsoleRoute: typeof ConsoleRouteWithChildren
   ConversationsRoute: typeof ConversationsRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
@@ -205,6 +312,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConversationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/console': {
+      id: '/console'
+      path: '/console'
+      fullPath: '/console'
+      preLoaderRoute: typeof ConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/agents': {
       id: '/agents'
       path: '/agents'
@@ -219,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/console/': {
+      id: '/console/'
+      path: '/'
+      fullPath: '/console/'
+      preLoaderRoute: typeof ConsoleIndexRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
     '/agents/': {
       id: '/agents/'
       path: '/'
@@ -232,6 +353,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/voice/$agentId'
       preLoaderRoute: typeof VoiceAgentIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/console/numbers': {
+      id: '/console/numbers'
+      path: '/numbers'
+      fullPath: '/console/numbers'
+      preLoaderRoute: typeof ConsoleNumbersRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/live': {
+      id: '/console/live'
+      path: '/live'
+      fullPath: '/console/live'
+      preLoaderRoute: typeof ConsoleLiveRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/keys': {
+      id: '/console/keys'
+      path: '/keys'
+      fullPath: '/console/keys'
+      preLoaderRoute: typeof ConsoleKeysRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/dashboard': {
+      id: '/console/dashboard'
+      path: '/dashboard'
+      fullPath: '/console/dashboard'
+      preLoaderRoute: typeof ConsoleDashboardRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/conversations': {
+      id: '/console/conversations'
+      path: '/conversations'
+      fullPath: '/console/conversations'
+      preLoaderRoute: typeof ConsoleConversationsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/analytics': {
+      id: '/console/analytics'
+      path: '/analytics'
+      fullPath: '/console/analytics'
+      preLoaderRoute: typeof ConsoleAnalyticsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/agents': {
+      id: '/console/agents'
+      path: '/agents'
+      fullPath: '/console/agents'
+      preLoaderRoute: typeof ConsoleAgentsRouteImport
+      parentRoute: typeof ConsoleRoute
     }
     '/agents/create': {
       id: '/agents/create'
@@ -265,9 +435,35 @@ const AgentsRouteChildren: AgentsRouteChildren = {
 const AgentsRouteWithChildren =
   AgentsRoute._addFileChildren(AgentsRouteChildren)
 
+interface ConsoleRouteChildren {
+  ConsoleAgentsRoute: typeof ConsoleAgentsRoute
+  ConsoleAnalyticsRoute: typeof ConsoleAnalyticsRoute
+  ConsoleConversationsRoute: typeof ConsoleConversationsRoute
+  ConsoleDashboardRoute: typeof ConsoleDashboardRoute
+  ConsoleKeysRoute: typeof ConsoleKeysRoute
+  ConsoleLiveRoute: typeof ConsoleLiveRoute
+  ConsoleNumbersRoute: typeof ConsoleNumbersRoute
+  ConsoleIndexRoute: typeof ConsoleIndexRoute
+}
+
+const ConsoleRouteChildren: ConsoleRouteChildren = {
+  ConsoleAgentsRoute: ConsoleAgentsRoute,
+  ConsoleAnalyticsRoute: ConsoleAnalyticsRoute,
+  ConsoleConversationsRoute: ConsoleConversationsRoute,
+  ConsoleDashboardRoute: ConsoleDashboardRoute,
+  ConsoleKeysRoute: ConsoleKeysRoute,
+  ConsoleLiveRoute: ConsoleLiveRoute,
+  ConsoleNumbersRoute: ConsoleNumbersRoute,
+  ConsoleIndexRoute: ConsoleIndexRoute,
+}
+
+const ConsoleRouteWithChildren =
+  ConsoleRoute._addFileChildren(ConsoleRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AgentsRoute: AgentsRouteWithChildren,
+  ConsoleRoute: ConsoleRouteWithChildren,
   ConversationsRoute: ConversationsRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
