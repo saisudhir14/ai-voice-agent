@@ -43,8 +43,8 @@ export function CommandPalette({ open, onClose, items }: CommandPaletteProps) {
   if (!open) return null
 
   return (
-    <div onClick={onClose} role="dialog" aria-modal="true" aria-label="Command palette" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '14vh' }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ width: 560, maxWidth: '90vw', background: 'var(--lattice-surface)', border: '1px solid var(--lattice-border)', borderRadius: 10, boxShadow: 'var(--lattice-shadow-lg)', overflow: 'hidden' }}>
+    <div onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }} role="dialog" aria-modal="true" aria-label="Command palette" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '14vh' }}>
+      <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()} role="presentation" style={{ width: 560, maxWidth: '90vw', background: 'var(--lattice-surface)', border: '1px solid var(--lattice-border)', borderRadius: 10, boxShadow: 'var(--lattice-shadow-lg)', overflow: 'hidden' }}>
         <div style={{ padding: '0 14px', display: 'flex', alignItems: 'center', gap: 10, height: 48, borderBottom: '1px solid var(--lattice-border)' }}>
           <Icon.search size={15} stroke="var(--lattice-text-3)" />
           <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Type a command or search…" aria-label="Search commands" style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: 14, color: 'var(--lattice-text)', fontFamily: 'var(--lattice-sans)' }} />

@@ -85,7 +85,11 @@ export function ConversationsScreen() {
                 return (
                   <div
                     key={c.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={active}
                     onClick={() => setSelectedId(active ? null : c.id)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedId(active ? null : c.id) } }}
                     style={{ padding: '12px 16px', borderBottom: '1px solid var(--lattice-border)', cursor: 'pointer', background: active ? 'var(--lattice-accent-soft)' : 'transparent', borderLeft: active ? `3px solid var(--lattice-accent)` : '3px solid transparent' }}
                     onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--lattice-surface-2)' }}
                     onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent' }}
