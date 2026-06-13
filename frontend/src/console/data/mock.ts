@@ -242,8 +242,23 @@ export const LIVE_TRANSCRIPT: TranscriptTurn[] = [
   { role: 'agent', t: '00:56', text: "Correct — 2200 Broadway, Suite 3. I'm confirming that now.", latency: 523 },
 ]
 
+// Deterministic seeded PRNG (mulberry32) so demo fixtures are reproducible
+// and free of the non-crypto Math.random() pattern flagged by static analysis.
+const mulberry32 = (seed: number): (() => number) => {
+  let a = seed >>> 0
+  return () => {
+    a |= 0
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+const rand = mulberry32(0x1a771ce)
+
 const genSpark = (n: number, base: number, variance: number): number[] =>
-  Array.from({ length: n }, (_, i) => base + Math.sin(i / 2.2) * variance * 0.4 + Math.cos(i / 1.7) * variance * 0.3 + (Math.random() - 0.5) * variance * 0.4)
+  Array.from({ length: n }, (_, i) => base + Math.sin(i / 2.2) * variance * 0.4 + Math.cos(i / 1.7) * variance * 0.3 + (rand() - 0.5) * variance * 0.4)
 
 export const SPARKS = {
   calls: [14, 18, 22, 19, 24, 28, 31, 27, 33, 38, 42, 39, 44, 48, 52, 49, 56, 61, 58, 64, 69, 72, 68, 74],
@@ -253,8 +268,8 @@ export const SPARKS = {
 }
 
 export const LATENCY_ROWS: LatencyBreakdown[] = Array.from({ length: 40 }, () => ({
-  stt: 80 + Math.floor(Math.random() * 60),
-  llm: 200 + Math.floor(Math.random() * 180),
-  tts: 90 + Math.floor(Math.random() * 80),
-  net: 30 + Math.floor(Math.random() * 40),
+  stt: 80 + Math.floor(rand() * 60),
+  llm: 200 + Math.floor(rand() * 180),
+  tts: 90 + Math.floor(rand() * 80),
+  net: 30 + Math.floor(rand() * 40),
 }))

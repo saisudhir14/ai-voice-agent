@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 type SparklineProps = {
   data: number[]
   width?: number
@@ -8,6 +10,7 @@ type SparklineProps = {
 }
 
 export function Sparkline({ data, width = 120, height = 32, color = 'var(--lattice-accent)', fill = true, strokeWidth = 1.5 }: SparklineProps) {
+  const reactId = useId()
   if (!data?.length) return null
   const max = Math.max(...data)
   const min = Math.min(...data)
@@ -19,7 +22,7 @@ export function Sparkline({ data, width = 120, height = 32, color = 'var(--latti
   })
   const path = points.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')
   const area = `${path} L${width} ${height} L0 ${height} Z`
-  const gid = `sg-${Math.random().toString(36).slice(2, 8)}`
+  const gid = `sg-${reactId.replace(/:/g, '')}`
   return (
     <svg width={width} height={height} style={{ display: 'block', overflow: 'visible' }} aria-hidden="true">
       {fill && (
