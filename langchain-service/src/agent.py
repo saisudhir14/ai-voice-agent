@@ -7,7 +7,7 @@ import os
 from typing import AsyncGenerator
 from dataclasses import dataclass, field
 
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_anthropic import ChatAnthropic

@@ -35,19 +35,8 @@ func WithComponent(component string) zerolog.Logger {
 	return Log.With().Str("component", component).Logger()
 }
 
-// WithRequestID creates a logger with a request ID field
-// Use this for tracing requests across the system
-func WithRequestID(requestID string) zerolog.Logger {
-	return Log.With().Str("request_id", requestID).Logger()
-}
-
 // WithSessionID creates a logger with a session ID field
 // Use this for voice session tracking
 func WithSessionID(sessionID string) zerolog.Logger {
 	return Log.With().Str("session_id", sessionID).Logger()
-}
-
-// WithUserID creates a logger with a user ID field
-func WithUserID(userID string) zerolog.Logger {
-	return Log.With().Str("user_id", userID).Logger()
 }

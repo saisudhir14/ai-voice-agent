@@ -126,9 +126,3 @@ func GetUserID(ctx context.Context) (uuid.UUID, bool) {
 	userID, ok := ctx.Value(UserIDKey).(uuid.UUID)
 	return userID, ok
 }
-
-// GetClaims extracts full claims from context
-func GetClaims(ctx context.Context) (*Claims, bool) {
-	claims, ok := ctx.Value(UserKey).(*Claims)
-	return claims, ok
-}
