@@ -41,17 +41,14 @@ function RootLayout() {
 
   if (isAuth) {
     return (
-      <div className="min-h-screen bg-paper text-ink-2 antialiased" data-theme="light">
-        <MarketingHeader />
-        <main>
-          <Outlet />
-        </main>
-      </div>
+      <main>
+        <Outlet />
+      </main>
     )
   }
 
   return (
-    <div className="min-h-screen bg-paper text-ink-2 antialiased" data-theme="light">
+    <div className="min-h-screen bg-paper text-ink-2 antialiased">
       <AppHeader />
       <main className="pt-16">
         <Outlet />

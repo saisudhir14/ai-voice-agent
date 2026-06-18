@@ -4,74 +4,9 @@
 
 @layer base {
   :root {
-    --background: 220 20% 5%;
-    --foreground: 210 40% 98%;
-    --card: 220 18% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 220 18% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 12%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 220 14% 12%;
-    --muted-foreground: 215 20% 55%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 14%;
-    --input: 220 13% 14%;
-    --ring: 217 91% 60%;
     --radius: 0.5rem;
-
-    --bg: #0a0c10;
-    --surface: #12141a;
-    --surface-2: #1a1d26;
-    --border-strong: #252a35;
-    --text: #e2e8f0;
-    --text-2: #94a3b8;
-    --text-3: #64748b;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
     --row: 40px;
-
-    /* ============================================================
-       MARKETING DESIGN TOKENS — single source of truth (light)
-       Used by the public marketing site. Semantic, not literal.
-       ============================================================ */
-
-    /* Ink (text) ramp */
-    --mk-ink:        #0B1020;  /* display headings */
-    --mk-ink-2:      #3B4256;  /* body copy */
-    --mk-ink-3:      #6B7280;  /* muted / captions */
-    --mk-ink-on:     #FFFFFF;  /* text on dark/brand surfaces */
-
-    /* Paper (surface) ramp */
-    --mk-paper:      #FFFFFF;  /* page background */
-    --mk-paper-2:    #F6F7F9;  /* alternating section */
-    --mk-paper-3:    #EEF1F5;  /* deeper inset surface */
-    --mk-ink-surface:#0B1020;  /* dark "navy" feature surface */
-
-    /* Lines / borders */
-    --mk-line:       #E6E8EC;  /* hairline */
-    --mk-line-2:     #D6DAE1;  /* stronger divider */
-
-    /* Brand — a single restrained accent */
-    --mk-brand:      #2F6BFF;  /* primary accent */
-    --mk-brand-ink:  #1E50D6;  /* accent text / hover */
-    --mk-brand-tint: #ECF1FF;  /* accent wash background */
-    --mk-brand-ring: rgba(47,107,255,0.35);
-
-    /* Elevation (soft, light-mode) */
-    --mk-shadow-xs:  0 1px 2px rgba(11,16,32,0.04);
-    --mk-shadow-sm:  0 1px 3px rgba(11,16,32,0.06), 0 1px 2px rgba(11,16,32,0.04);
-    --mk-shadow-md:  0 6px 20px rgba(11,16,32,0.08);
-    --mk-shadow-lg:  0 18px 50px rgba(11,16,32,0.12);
-
-    /* Layout */
-    --mk-container:  1200px;
+    --mk-container: 1200px;
   }
 
   [data-theme="light"] {
@@ -105,6 +40,77 @@
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
     --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+
+    --mk-ink: #0B1020;
+    --mk-ink-2: #3B4256;
+    --mk-ink-3: #6B7280;
+    --mk-ink-on: #FFFFFF;
+    --mk-paper: #FFFFFF;
+    --mk-paper-2: #F6F7F9;
+    --mk-paper-3: #EEF1F5;
+    --mk-ink-surface: #0B1020;
+    --mk-line: #E6E8EC;
+    --mk-line-2: #D6DAE1;
+    --mk-brand: #2F6BFF;
+    --mk-brand-ink: #1E50D6;
+    --mk-brand-tint: #ECF1FF;
+    --mk-brand-ring: rgba(47,107,255,0.35);
+    --mk-shadow-xs: 0 1px 2px rgba(11,16,32,0.04);
+    --mk-shadow-sm: 0 1px 3px rgba(11,16,32,0.06), 0 1px 2px rgba(11,16,32,0.04);
+    --mk-shadow-md: 0 6px 20px rgba(11,16,32,0.08);
+    --mk-shadow-lg: 0 18px 50px rgba(11,16,32,0.12);
+  }
+
+  [data-theme="dark"] {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 40% 9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 40% 9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 25% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 25% 14%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 25% 18%;
+    --input: 217 25% 18%;
+    --ring: 217 91% 60%;
+
+    --bg: #0a0c10;
+    --surface: #12141a;
+    --surface-2: #1a1d26;
+    --border-strong: #2a3142;
+    --text: #e2e8f0;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+
+    --mk-ink: #F1F5F9;
+    --mk-ink-2: #CBD5E1;
+    --mk-ink-3: #94A3B8;
+    --mk-ink-on: #0B1020;
+    --mk-paper: #0B1020;
+    --mk-paper-2: #121828;
+    --mk-paper-3: #1A2235;
+    --mk-ink-surface: #060A14;
+    --mk-line: #1E293B;
+    --mk-line-2: #334155;
+    --mk-brand: #4B83FF;
+    --mk-brand-ink: #7AA8FF;
+    --mk-brand-tint: #1A2D5C;
+    --mk-brand-ring: rgba(75,131,255,0.4);
+    --mk-shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+    --mk-shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+    --mk-shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+    --mk-shadow-lg: 0 18px 50px rgba(0,0,0,0.5);
   }
 
   [data-density="compact"]     { --row: 34px; }
@@ -160,6 +166,10 @@
     background-size: 32px 32px;
   }
 
+  [data-theme="dark"] .mk-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  }
+
   /* Marketing: infinite logo marquee */
   .mk-marquee {
     animation: mk-marquee 38s linear infinite;
@@ -169,6 +179,11 @@
 @keyframes mk-marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+@keyframes auth-wave {
+  from { transform: scaleY(0.45); opacity: 0.5; }
+  to   { transform: scaleY(1); opacity: 1; }
 }
 
 /* Respect user motion preferences across the whole app */

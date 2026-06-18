@@ -5,6 +5,7 @@ import { VoiceIcon } from '@/components/shared/voice-icon'
 import { cn } from '@/lib/utils'
 import { Container } from './primitives'
 import { MkButton } from './mk-button'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 
 type NavLink = { label: string; to?: string; href?: string }
 
@@ -74,11 +75,12 @@ export function MarketingHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <MkButton asChild variant="ghost" size="md">
             <Link to="/login">Sign in</Link>
           </MkButton>
           <MkButton asChild variant="primary" size="md">
-            <Link to="/register">Get a demo</Link>
+            <Link to="/register">Sign up</Link>
           </MkButton>
         </div>
 
@@ -106,11 +108,14 @@ export function MarketingHeader() {
               />
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-line pt-4">
+              <div className="px-1 pb-2">
+                <ThemeToggle className="w-full justify-center" />
+              </div>
               <MkButton asChild variant="secondary" size="lg" onClick={() => setOpen(false)}>
                 <Link to="/login">Sign in</Link>
               </MkButton>
               <MkButton asChild variant="primary" size="lg" onClick={() => setOpen(false)}>
-                <Link to="/register">Get a demo</Link>
+                <Link to="/register">Sign up</Link>
               </MkButton>
             </div>
           </Container>

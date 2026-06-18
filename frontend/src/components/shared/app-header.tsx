@@ -5,6 +5,7 @@ import { VoiceIcon } from '@/components/shared/voice-icon'
 import { cn } from '@/lib/utils'
 import { Container } from '@/components/landing/primitives'
 import { MkButton } from '@/components/landing/mk-button'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { useAuthStore } from '@/stores/authStore'
 
 const appNavItems = [
@@ -72,6 +73,7 @@ export function AppHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <MkButton asChild variant="ghost" size="md">
             <Link to="/console/dashboard">
               <Terminal className="h-3.5 w-3.5" />
@@ -116,6 +118,9 @@ export function AppHeader() {
               </Link>
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-line pt-4">
+              <div className="px-1 pb-2">
+                <ThemeToggle className="w-full justify-center" />
+              </div>
               <MkButton asChild variant="secondary" size="lg" onClick={() => setOpen(false)}>
                 <Link to="/console/dashboard">
                   <Terminal className="h-4 w-4" />

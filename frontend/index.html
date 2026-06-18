@@ -1,7 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme-storage');
+          var mode = 'system';
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            mode = parsed.state?.theme || 'system';
+          }
+          var resolved = mode === 'system'
+            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : mode;
+          document.documentElement.setAttribute('data-theme', resolved);
+          if (resolved === 'dark') document.documentElement.classList.add('dark');
+        } catch (e) {
+          var fallback = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', fallback);
+        }
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/voice-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="AI Voice Agent Platform - Create customizable voice AI assistants for your business" />

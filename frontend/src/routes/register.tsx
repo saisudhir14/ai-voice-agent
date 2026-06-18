@@ -1,17 +1,13 @@
 import { useState } from 'react'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { authApi } from '@/lib/api'
 import { registerSchema, type RegisterInput } from '@/lib/schemas'
-import { Mail, Lock, User, Loader2, ArrowRight, ShieldCheck } from 'lucide-react'
-import { VoiceIcon } from '@/components/shared/voice-icon'
+import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { 
-  GradientBackground, 
-  SpotlightCard, 
-  AnimatedSection 
-} from '@/components/shared'
+import { MkButton } from '@/components/landing/mk-button'
+import { AuthLayout, AuthSignupAside } from '@/components/shared/auth-layout'
+import { InputField, PasswordField } from '@/components/shared/form-field'
 
 export const Route = createFileRoute('/register')({
   component: RegisterPage,
@@ -53,7 +49,6 @@ function RegisterPage() {
 
     setIsLoading(true)
     try {
-      // Only send required fields to API (exclude confirmPassword)
       const response = await authApi.register({
         email: formData.email,
         password: formData.password,
@@ -62,132 +57,86 @@ function RegisterPage() {
       })
       const { user, access_token, refresh_token } = response.data
       setAuth(user, access_token, refresh_token)
-      toast.success('Registration complete. Welcome to VoiceAI.')
+      toast.success('Account created. Welcome to VoiceAI.')
       navigate({ to: '/dashboard' })
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Registration failed')
+    } catch (error: unknown) {
+      const message =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
+          : undefined
+      toast.error(message || 'Sign up failed. Please try again.')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-nebula-deep flex items-center justify-center p-6">
-      <GradientBackground intensity="medium" />
-      
-      <div className="relative z-10 w-full max-w-md mt-12">
-        <AnimatedSection>
-          <div className="text-center mb-10">
-            <VoiceIcon className="mx-auto h-16 w-16 text-white mb-6" />
-            <h1 className="text-3xl font-bold text-white tracking-tighter">Join the Collective</h1>
-            <p className="text-slate-500 mt-2">Initialize your creator account</p>
-          </div>
-        </AnimatedSection>
+    <AuthLayout
+      mode="register"
+      title="Sign up"
+      description="Create your account to start building voice agents."
+      aside={<AuthSignupAside />}
+      footer={null}
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <InputField
+          label="Name"
+          name="name"
+          type="text"
+          autoComplete="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Your name"
+          error={errors.name}
+          required
+          className="h-11 rounded-[10px] border-line"
+        />
 
-        <AnimatedSection delay={0.1}>
-          <SpotlightCard className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Full Identity</label>
-                <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-slate-400 transition-colors" />
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-slate-500/50 focus:ring-slate-500/20 text-white outline-none transition-all"
-                    placeholder="Commander Shepard"
-                  />
-                </div>
-                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-              </div>
+        <InputField
+          label="Email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="you@company.com"
+          error={errors.email}
+          required
+          className="h-11 rounded-[10px] border-line"
+        />
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Digital Mail</label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-slate-400 transition-colors" />
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-slate-500/50 focus:ring-slate-500/20 text-white outline-none transition-all"
-                    placeholder="you@domain.com"
-                  />
-                </div>
-                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
-              </div>
+        <PasswordField
+          label="Create password"
+          name="password"
+          autoComplete="new-password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="••••••••"
+          error={errors.password}
+          required
+          className="h-11 rounded-[10px] border-line"
+        />
 
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Secure Access Key</label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-slate-400 transition-colors" />
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-slate-500/50 focus:ring-slate-500/20 text-white outline-none transition-all"
-                    placeholder="••••••••"
-                  />
-                </div>
-                {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
-              </div>
+        <PasswordField
+          label="Confirm password"
+          name="confirmPassword"
+          autoComplete="new-password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="••••••••"
+          error={errors.confirmPassword}
+          required
+          className="h-11 rounded-[10px] border-line"
+        />
 
-              <div className="space-y-2">
-                <label htmlFor="confirmPassword" className="text-xs font-bold text-slate-400 uppercase tracking-widest">Confirm Access Key</label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-slate-400 transition-colors" />
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/5 rounded-xl focus:border-slate-500/50 focus:ring-slate-500/20 text-white outline-none transition-all"
-                    placeholder="••••••••"
-                  />
-                </div>
-                {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>}
-              </div>
+        <p className="text-xs leading-relaxed text-ink-3">
+          By signing up, you agree to our Terms of Service and Privacy Policy.
+        </p>
 
-              <div className="flex items-center gap-3 py-2">
-                <div className="h-10 w-10 rounded-lg bg-slate-500/10 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="h-5 w-5 text-slate-400" />
-                </div>
-                <p className="text-[10px] text-slate-500 leading-tight uppercase tracking-tighter">By joining, you agree to our Protocol Terms and Data Encryption standards.</p>
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full h-14 mt-2 bg-white text-black hover:bg-slate-200 rounded-xl font-bold text-lg shadow-xl shadow-white/5 transition-all" 
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    Initialize Account <ArrowRight className="h-5 w-5" />
-                  </span>
-                )}
-              </Button>
-            </form>
-          </SpotlightCard>
-        </AnimatedSection>
-
-        <AnimatedSection delay={0.2}>
-          <p className="text-center text-slate-500 mt-8 text-sm">
-            Already registered?{' '}
-            <Link to="/login" className="text-slate-400 hover:text-slate-300 font-bold transition-colors">
-              Decrypt Login
-            </Link>
-          </p>
-        </AnimatedSection>
-      </div>
-    </div>
+        <MkButton type="submit" variant="primary" size="lg" className="w-full" disabled={isLoading}>
+          {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign up'}
+        </MkButton>
+      </form>
+    </AuthLayout>
   )
 }

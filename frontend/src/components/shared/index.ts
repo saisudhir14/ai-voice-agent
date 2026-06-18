@@ -1,5 +1,10 @@
 // Barrel export for shared components
 export * from "./app-header"
+export * from "./theme-provider"
+export * from "./theme-toggle"
+export * from "./wizard-steps"
+export * from "./auth-header"
+export * from "./auth-layout"
 export * from "./page-header"
 export * from "./empty-state"
 export * from "./form-field"

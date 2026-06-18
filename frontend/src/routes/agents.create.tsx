@@ -2,19 +2,15 @@ import { useEffect, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { agentsApi, industriesApi } from '@/lib/api'
 import { createAgentSchema, type CreateAgentInput } from '@/lib/schemas'
-import { Bot, Loader2, Check, ArrowLeft, ArrowRight, Sparkles, BrainCircuit } from 'lucide-react'
+import { Bot, Loader2, Check, ArrowLeft, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { 
-  PageLoading, 
-  GradientBackground, 
-  AnimatedSection, 
-  SpotlightCard 
-} from '@/components/shared'
+import { MkButton } from '@/components/landing/mk-button'
+import { Card } from '@/components/landing/card'
+import { Container } from '@/components/landing/primitives'
+import { AnimatedSection, PageLoading, WizardSteps } from '@/components/shared'
+import { InputField, TextareaField } from '@/components/shared/form-field'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export const Route = createFileRoute('/agents/create')({
   component: CreateAgentPage,
@@ -32,14 +28,20 @@ interface Industry {
 
 const industryIcons: Record<string, string> = {
   'customer-support': '🎧',
-  'sales': '📈',
-  'healthcare': '🏥',
+  sales: '📈',
+  healthcare: '🏥',
   'real-estate': '🏠',
-  'restaurant': '🍽️',
-  'legal': '⚖️',
-  'education': '🎓',
-  'custom': '⚙️',
+  restaurant: '🍽️',
+  legal: '⚖️',
+  education: '🎓',
+  custom: '⚙️',
 }
+
+const WIZARD_STEPS = [
+  { id: 1, label: 'Industry' },
+  { id: 2, label: 'Details' },
+  { id: 3, label: 'Behavior' },
+]
 
 export function CreateAgentPage() {
   const navigate = useNavigate()
@@ -62,7 +64,7 @@ export function CreateAgentPage() {
       try {
         const response = await industriesApi.list()
         setIndustries(response.data || [])
-      } catch (error) {
+      } catch {
         toast.error('Failed to load industries')
       } finally {
         setLoading(false)
@@ -80,7 +82,7 @@ export function CreateAgentPage() {
       greeting: industry.default_greeting,
     }))
     setErrors((prev) => ({ ...prev, industry_id: '' }))
-    setStep(2) // Auto-advance to next step
+    setStep(2)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -102,8 +104,6 @@ export function CreateAgentPage() {
         }
       })
       setErrors(fieldErrors)
-      
-      // Navigate to step with errors
       if (fieldErrors.industry_id) setStep(1)
       else if (fieldErrors.name) setStep(2)
       return
@@ -112,10 +112,14 @@ export function CreateAgentPage() {
     setSubmitting(true)
     try {
       const response = await agentsApi.create(formData)
-      toast.success('Agent initialized successfully!')
+      toast.success('Agent created successfully.')
       navigate({ to: '/agents/$agentId', params: { agentId: response.data.id } })
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to initialize agent')
+    } catch (error: unknown) {
+      const message =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as { response?: { data?: { error?: string } } }).response?.data?.error
+          : undefined
+      toast.error(message || 'Failed to create agent')
     } finally {
       setSubmitting(false)
     }
@@ -124,220 +128,194 @@ export function CreateAgentPage() {
   if (loading) return <PageLoading />
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-nebula-deep">
-      <GradientBackground intensity="low" />
-      
-      <div className="relative z-10 max-w-4xl mx-auto px-4 py-12 mt-20">
-        <AnimatedSection>
-          <div className="flex items-center gap-4 mb-8">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => step > 1 ? setStep(step - 1) : navigate({ to: '/agents' })}
-              className="rounded-full bg-white/5 text-slate-400"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-white tracking-tight">Initialize Persona</h1>
-              <p className="text-slate-500 text-sm">Step {step} of 3: {step === 1 ? 'Industry Selection' : step === 2 ? 'Identity' : 'Cognitive Config'}</p>
-            </div>
+    <Container className="py-10 sm:py-12">
+      <AnimatedSection>
+        <div className="mb-8 flex items-center gap-4">
+          <MkButton
+            variant="secondary"
+            size="md"
+            onClick={() => (step > 1 ? setStep(step - 1) : navigate({ to: '/agents' }))}
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </MkButton>
+          <div>
+            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Create agent</h1>
+            <p className="mt-1 text-sm text-ink-2">
+              Step {step} of 3 — {WIZARD_STEPS[step - 1].label}
+            </p>
           </div>
-        </AnimatedSection>
-
-        {/* Step Progress Bar */}
-        <div className="flex gap-2 mb-10">
-          {[1, 2, 3].map((s) => (
-            <div 
-              key={s} 
-              className={cn(
-                "h-1.5 flex-1 rounded-full transition-all duration-500",
-                step >= s ? "bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]" : "bg-white/5"
-              )}
-            />
-          ))}
         </div>
+      </AnimatedSection>
 
-        <form onSubmit={handleSubmit}>
-          <AnimatePresence mode="wait">
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-white mb-2">Choose an Industry Template</h2>
-                  <p className="text-slate-400">Templates come with pre-optimized system prompts for specific use cases.</p>
-                </div>
+      <WizardSteps steps={WIZARD_STEPS} current={step} />
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {industries.map((industry) => (
+      <form onSubmit={handleSubmit}>
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="mb-8">
+                <h2 className="font-display text-xl font-semibold text-ink">Choose an industry</h2>
+                <p className="mt-2 text-sm text-ink-2">
+                  Templates include pre-built prompts tailored to each use case.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                {industries.map((industry) => {
+                  const selected = selectedIndustry?.id === industry.id
+                  return (
                     <button
                       key={industry.id}
                       type="button"
                       onClick={() => handleIndustrySelect(industry)}
-                      className={cn(
-                        "group relative p-6 rounded-2xl border transition-all duration-300 text-center",
-                        selectedIndustry?.id === industry.id
-                          ? "bg-cyan-500/10 border-cyan-500/50 shadow-lg shadow-cyan-500/10"
-                          : "bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/10"
-                      )}
+                      className="text-left"
                     >
-                      <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{industryIcons[industry.slug] || '🤖'}</div>
-                      <div className={cn("font-bold text-sm tracking-tight", selectedIndustry?.id === industry.id ? "text-cyan-400" : "text-slate-300")}>
-                        {industry.name}
-                      </div>
-                      {selectedIndustry?.id === industry.id && (
-                        <div className="absolute top-2 right-2 h-5 w-5 bg-cyan-500 rounded-full flex items-center justify-center">
-                          <Check className="h-3 w-3 text-black font-bold" />
-                        </div>
-                      )}
+                      <Card
+                        interactive
+                        padding="md"
+                        className={cn(
+                          'relative h-full text-center transition-colors',
+                          selected && 'border-brand bg-brand-tint/40',
+                        )}
+                      >
+                        <div className="text-3xl mb-3">{industryIcons[industry.slug] || '🤖'}</div>
+                        <p className={cn('text-sm font-semibold', selected ? 'text-brand-ink' : 'text-ink')}>
+                          {industry.name}
+                        </p>
+                        {selected && (
+                          <span className="absolute right-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-ink-on">
+                            <Check className="h-3 w-3" />
+                          </span>
+                        )}
+                      </Card>
                     </button>
-                  ))}
+                  )
+                })}
+              </div>
+              {errors.industry_id && (
+                <p className="mt-4 text-sm text-destructive">{errors.industry_id}</p>
+              )}
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card elevated padding="lg">
+                <div className="mb-8 flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-tint">
+                    <Bot className="h-5 w-5 text-brand-ink" />
+                  </span>
+                  <div>
+                    <h2 className="font-display text-lg font-semibold text-ink">Agent details</h2>
+                    <p className="text-sm text-ink-2">Give your agent a name and short description.</p>
+                  </div>
                 </div>
-                {errors.industry_id && (
-                  <p className="text-red-400 text-sm mt-4 font-medium flex items-center gap-2">
-                    <span className="h-1 w-1 bg-red-400 rounded-full" /> {errors.industry_id}
+
+                <div className="space-y-5">
+                  <InputField
+                    label="Agent name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="e.g. Support Assistant"
+                    error={errors.name}
+                    required
+                    className="h-11 rounded-[10px] border-line"
+                  />
+                  <InputField
+                    label="Description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder="What does this agent help with?"
+                    error={errors.description}
+                    className="h-11 rounded-[10px] border-line"
+                  />
+                </div>
+
+                <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
+                  <MkButton type="button" variant="ghost" size="md" onClick={() => setStep(1)}>
+                    Back
+                  </MkButton>
+                  <MkButton type="button" variant="primary" size="md" onClick={() => setStep(3)}>
+                    Continue
+                    <ArrowRight className="h-4 w-4" />
+                  </MkButton>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card elevated padding="lg">
+                <div className="mb-8">
+                  <h2 className="font-display text-lg font-semibold text-ink">Behavior & greeting</h2>
+                  <p className="mt-1 text-sm text-ink-2">
+                    Define how your agent thinks and what it says first.
                   </p>
-                )}
-              </motion.div>
-            )}
+                </div>
 
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <SpotlightCard className="p-8">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="h-10 w-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
-                      <Bot className="h-6 w-6 text-orange-400" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white">Identity & Role</h3>
-                  </div>
+                <div className="space-y-5">
+                  <TextareaField
+                    label="System prompt"
+                    name="system_prompt"
+                    value={formData.system_prompt}
+                    onChange={handleChange}
+                    placeholder="Define behavior, constraints, and knowledge..."
+                    error={errors.system_prompt}
+                    className="min-h-[180px] rounded-[10px] border-line"
+                  />
+                  <InputField
+                    label="Greeting"
+                    name="greeting"
+                    value={formData.greeting}
+                    onChange={handleChange}
+                    placeholder="The first words your agent speaks..."
+                    error={errors.greeting}
+                    className="h-11 rounded-[10px] border-line"
+                  />
+                </div>
 
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-300 uppercase tracking-widest">Agent Designation</label>
-                      <Input
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="e.g., Nova Support Unit"
-                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-orange-500/50 focus:ring-orange-500/20 text-lg"
-                      />
-                      {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-300 uppercase tracking-widest">Core Directive</label>
-                      <Input
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="Brief summary of the agent's primary goal"
-                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-orange-500/50 focus:ring-orange-500/20"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between mt-12">
-                    <Button type="button" variant="ghost" onClick={() => setStep(1)} className="text-slate-400">Back</Button>
-                    <Button type="button" onClick={() => setStep(3)} className="bg-white text-black hover:bg-slate-200 rounded-full px-8">
-                      Configure AI <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </div>
-                </SpotlightCard>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <SpotlightCard className="p-8">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="h-10 w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                      <BrainCircuit className="h-6 w-6 text-cyan-400" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white">Cognitive Programming</h3>
-                  </div>
-
-                  <div className="space-y-8">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-bold text-slate-300 uppercase tracking-widest">System Protocol</label>
-                        <Badge variant="outline" className="text-[10px] text-cyan-400 border-cyan-500/30">AI Directive</Badge>
-                      </div>
-                      <Textarea
-                        name="system_prompt"
-                        value={formData.system_prompt}
-                        onChange={handleChange}
-                        placeholder="Define the behavior, constraints, and knowledge base..."
-                        className="min-h-[200px] bg-white/5 border-white/5 rounded-xl focus:border-cyan-500/50 focus:ring-cyan-500/20 text-slate-300 leading-relaxed"
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-bold text-slate-300 uppercase tracking-widest">Initial Greeting</label>
-                        <Sparkles className="h-4 w-4 text-cyan-400" />
-                      </div>
-                      <Input
-                        name="greeting"
-                        value={formData.greeting}
-                        onChange={handleChange}
-                        placeholder="The first words the agent speaks..."
-                        className="h-14 bg-white/5 border-white/5 rounded-xl focus:border-cyan-500/50 focus:ring-cyan-500/20"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between mt-12 pt-8 border-t border-white/5">
-                    <Button type="button" variant="ghost" onClick={() => setStep(2)} className="text-slate-400">Back</Button>
-                    <Button 
-                      type="submit" 
-                      disabled={submitting}
-                      className="bg-cyan-500 hover:bg-cyan-400 text-white rounded-full px-10 h-14 font-bold shadow-xl shadow-cyan-500/20"
-                    >
-                      {submitting ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                      ) : (
-                        <>
-                          <Bot className="h-5 w-5 mr-2" />
-                          Initialize Agent
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </SpotlightCard>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </form>
-      </div>
-    </div>
+                <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
+                  <MkButton type="button" variant="ghost" size="md" onClick={() => setStep(2)}>
+                    Back
+                  </MkButton>
+                  <MkButton type="submit" variant="primary" size="lg" disabled={submitting}>
+                    {submitting ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Bot className="h-4 w-4" />
+                        Create agent
+                      </>
+                    )}
+                  </MkButton>
+                </div>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </form>
+    </Container>
   )
 }
-
-// Re-using local components for better styling
-const Input = ({ className, ...props }: any) => (
-  <input
-    className={cn(
-      "flex w-full px-4 py-2 transition-smooth outline-none",
-      className
-    )}
-    {...props}
-  />
-)
