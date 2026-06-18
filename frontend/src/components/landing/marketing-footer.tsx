@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { VoiceIcon } from '@/components/shared/voice-icon'
+import { BrandLogo } from '@/components/shared/brand-logo'
 import { Container } from './primitives'
 
 type FooterLink = { label: string; to?: string; href?: string }
@@ -64,12 +64,7 @@ export function MarketingFooter() {
       <Container className="py-14 lg:py-16">
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
-            <Link to="/" className="flex items-center gap-2.5" aria-label="VoiceAI home">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-ink-on">
-                <VoiceIcon className="h-4 w-4" />
-              </span>
-              <span className="font-display text-lg font-semibold tracking-tight text-ink">VoiceAI</span>
-            </Link>
+            <BrandLogo />
             <p className="mt-4 text-sm leading-relaxed text-ink-2">
               LLM-native voice agents for the businesses that depend on every call going right.
             </p>

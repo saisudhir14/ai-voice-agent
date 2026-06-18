@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Menu, X } from 'lucide-react'
-import { VoiceIcon } from '@/components/shared/voice-icon'
+import { BrandLogo } from '@/components/shared/brand-logo'
 import { cn } from '@/lib/utils'
 import { Container } from './primitives'
 import { MkButton } from './mk-button'
@@ -59,12 +59,7 @@ export function MarketingHeader() {
       )}
     >
       <Container className="flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5" aria-label="VoiceAI home">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-ink-on">
-            <VoiceIcon className="h-4 w-4" />
-          </span>
-          <span className="font-display text-lg font-semibold tracking-tight text-ink">VoiceAI</span>
-        </Link>
+        <BrandLogo />
 
         <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
           {navLinks.map((link) => (

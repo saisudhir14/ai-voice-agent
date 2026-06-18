@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Menu, X, LogOut, LayoutDashboard, Bot, MessageSquare, Terminal } from 'lucide-react'
-import { VoiceIcon } from '@/components/shared/voice-icon'
+import { BrandLogo } from '@/components/shared/brand-logo'
 import { cn } from '@/lib/utils'
 import { Container } from '@/components/landing/primitives'
 import { MkButton } from '@/components/landing/mk-button'
@@ -50,12 +50,7 @@ export function AppHeader() {
       )}
     >
       <Container className="flex h-16 items-center justify-between">
-        <Link to="/dashboard" className="flex items-center gap-2.5" aria-label="VoiceAI dashboard">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-ink-on">
-            <VoiceIcon className="h-4 w-4" />
-          </span>
-          <span className="font-display text-lg font-semibold tracking-tight text-ink">VoiceAI</span>
-        </Link>
+        <BrandLogo to="/dashboard" aria-label="VoiceAI dashboard" />
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="App">
           {appNavItems.map((item) => (
