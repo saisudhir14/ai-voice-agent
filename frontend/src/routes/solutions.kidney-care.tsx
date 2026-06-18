@@ -32,12 +32,12 @@ export const Route = createFileRoute('/solutions/kidney-care')({
   component: KidneyCarePage,
 })
 
-const heroMetrics = [
-  { value: '156', label: 'treatments / patient / year' },
-  { value: '~10%', label: 'avg missed-treatment rate' },
-  { value: '$22–30K', label: 'cost per avoidable admit' },
-  { value: '30 days', label: 'highest readmit-risk window' },
-]
+// const heroMetrics = [
+//   { value: '156', label: 'treatments / patient / year' },
+//   { value: '~10%', label: 'avg missed-treatment rate' },
+//   { value: '$22–30K', label: 'cost per avoidable admit' },
+//   { value: '30 days', label: 'highest readmit-risk window' },
+// ]
 
 const useCases = [
   {
@@ -142,23 +142,23 @@ const faqs = [
   },
 ]
 
-const pilotPhases = [
-  {
-    week: 'Weeks 1–2',
-    title: 'Scope & build',
-    bullets: ['Workstream selection (missed-treatment + post-discharge)', 'Prompt + policy authoring with your clinical team', 'EHR / telephony integration kickoff', 'IRB / privacy review'],
-  },
-  {
-    week: 'Weeks 3–4',
-    title: 'Eval & soft-launch',
-    bullets: ['5,000+ simulated calls against clinical eval set', 'Shadow mode on 100 real patients', 'On-call escalation routing wired up', 'Go / no-go review with CMO + CNO'],
-  },
-  {
-    week: 'Weeks 5–12',
-    title: 'Production pilot',
-    bullets: ['One region / 30–50 centers', 'Weekly metric review (adherence, readmits, RN hours)', 'Iteration on prompts, escalations, edge cases', 'Conversion conversation in week 11'],
-  },
-]
+// const pilotPhases = [
+//   {
+//     week: 'Weeks 1–2',
+//     title: 'Scope & build',
+//     bullets: ['Workstream selection (missed-treatment + post-discharge)', 'Prompt + policy authoring with your clinical team', 'EHR / telephony integration kickoff', 'IRB / privacy review'],
+//   },
+//   {
+//     week: 'Weeks 3–4',
+//     title: 'Eval & soft-launch',
+//     bullets: ['5,000+ simulated calls against clinical eval set', 'Shadow mode on 100 real patients', 'On-call escalation routing wired up', 'Go / no-go review with CMO + CNO'],
+//   },
+//   {
+//     week: 'Weeks 5–12',
+//     title: 'Production pilot',
+//     bullets: ['One region / 30–50 centers', 'Weekly metric review (adherence, readmits, RN hours)', 'Iteration on prompts, escalations, edge cases', 'Conversion conversation in week 11'],
+//   },
+// ]
 
 function KidneyCarePage() {
   return (
@@ -198,6 +198,7 @@ function KidneyCarePage() {
               </MkButton>
             </div>
           </AnimatedSection>
+          {/* Hero metrics — hidden until we have validated customer data
           <AnimatedSection delay={0.25}>
             <dl className="mt-16 grid w-full max-w-4xl grid-cols-2 gap-x-6 gap-y-8 border-t border-line pt-10 sm:grid-cols-4">
               {heroMetrics.map((m) => (
@@ -209,6 +210,7 @@ function KidneyCarePage() {
               ))}
             </dl>
           </AnimatedSection>
+          */}
         </Container>
       </Section>
 
@@ -318,6 +320,7 @@ function KidneyCarePage() {
       </SectionBlock>
 
       {/* ============ ROI ============ */}
+      {/*
       <SectionBlock
         tone="paper"
         divider
@@ -368,6 +371,7 @@ function KidneyCarePage() {
           </div>
         </div>
       </SectionBlock>
+      */}
 
       {/* ============ COMPLIANCE ============ */}
       <SectionBlock
@@ -403,6 +407,7 @@ function KidneyCarePage() {
       </SectionBlock>
 
       {/* ============ PILOT ============ */}
+      {/*
       <SectionBlock
         tone="paper-2"
         divider
@@ -429,6 +434,7 @@ function KidneyCarePage() {
           ))}
         </div>
       </SectionBlock>
+      */}
 
       {/* ============ FAQ ============ */}
       <SectionBlock tone="paper" divider eyebrow="FAQ" title="What clinical & procurement teams ask first.">
