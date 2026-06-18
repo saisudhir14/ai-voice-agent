@@ -1,5 +1,4 @@
 import React from 'react'
-import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface SpotlightCardProps {
@@ -13,44 +12,16 @@ export const SpotlightCard = ({
   className,
   containerClassName,
 }: SpotlightCardProps) => {
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  function handleMouseMove({
-    currentTarget,
-    clientX,
-    clientY,
-  }: React.MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect()
-    mouseX.set(clientX - left)
-    mouseY.set(clientY - top)
-  }
-
   return (
     <div
       className={cn(
-        "group relative flex size-full rounded-[var(--radius)] bg-white/[0.03] transition-colors hover:bg-white/[0.05]",
+        "group relative flex size-full rounded-xl bg-white/[0.03] border border-white/[0.06] transition-colors hover:bg-white/[0.05] hover:border-white/[0.1]",
         containerClassName
       )}
-      onMouseMove={handleMouseMove}
     >
-      <motion.div
-        className="pointer-events-none absolute -inset-px rounded-[var(--radius)] opacity-0 transition duration-300 group-hover:opacity-100"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              rgba(148, 163, 184, 0.15),
-              transparent 80%
-            )
-          `,
-          willChange: 'opacity',
-          transform: 'translateZ(0)', // GPU acceleration
-        }}
-      />
       <div
         className={cn(
-          "relative flex size-full flex-col overflow-hidden rounded-[var(--radius)] border border-white/[0.08] p-6",
+          "relative flex size-full flex-col overflow-hidden rounded-xl p-6",
           className
         )}
       >

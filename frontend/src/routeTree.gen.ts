@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SolutionsRouteImport } from './routes/solutions'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
@@ -17,9 +18,11 @@ import { Route as ConversationsRouteImport } from './routes/conversations'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SolutionsIndexRouteImport } from './routes/solutions.index'
 import { Route as ConsoleIndexRouteImport } from './routes/console.index'
 import { Route as AgentsIndexRouteImport } from './routes/agents.index'
 import { Route as VoiceAgentIdRouteImport } from './routes/voice.$agentId'
+import { Route as SolutionsKidneyCareRouteImport } from './routes/solutions.kidney-care'
 import { Route as ConsoleNumbersRouteImport } from './routes/console.numbers'
 import { Route as ConsoleLiveRouteImport } from './routes/console.live'
 import { Route as ConsoleKeysRouteImport } from './routes/console.keys'
@@ -30,6 +33,11 @@ import { Route as ConsoleAgentsRouteImport } from './routes/console.agents'
 import { Route as AgentsCreateRouteImport } from './routes/agents.create'
 import { Route as AgentsAgentIdRouteImport } from './routes/agents.$agentId'
 
+const SolutionsRoute = SolutionsRouteImport.update({
+  id: '/solutions',
+  path: '/solutions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShowcaseRoute = ShowcaseRouteImport.update({
   id: '/showcase',
   path: '/showcase',
@@ -70,6 +78,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SolutionsIndexRoute = SolutionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SolutionsRoute,
+} as any)
 const ConsoleIndexRoute = ConsoleIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -84,6 +97,11 @@ const VoiceAgentIdRoute = VoiceAgentIdRouteImport.update({
   id: '/voice/$agentId',
   path: '/voice/$agentId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SolutionsKidneyCareRoute = SolutionsKidneyCareRouteImport.update({
+  id: '/kidney-care',
+  path: '/kidney-care',
+  getParentRoute: () => SolutionsRoute,
 } as any)
 const ConsoleNumbersRoute = ConsoleNumbersRouteImport.update({
   id: '/numbers',
@@ -140,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/showcase': typeof ShowcaseRoute
+  '/solutions': typeof SolutionsRouteWithChildren
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
   '/console/agents': typeof ConsoleAgentsRoute
@@ -149,9 +168,11 @@ export interface FileRoutesByFullPath {
   '/console/keys': typeof ConsoleKeysRoute
   '/console/live': typeof ConsoleLiveRoute
   '/console/numbers': typeof ConsoleNumbersRoute
+  '/solutions/kidney-care': typeof SolutionsKidneyCareRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents/': typeof AgentsIndexRoute
   '/console/': typeof ConsoleIndexRoute
+  '/solutions/': typeof SolutionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -169,9 +190,11 @@ export interface FileRoutesByTo {
   '/console/keys': typeof ConsoleKeysRoute
   '/console/live': typeof ConsoleLiveRoute
   '/console/numbers': typeof ConsoleNumbersRoute
+  '/solutions/kidney-care': typeof SolutionsKidneyCareRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents': typeof AgentsIndexRoute
   '/console': typeof ConsoleIndexRoute
+  '/solutions': typeof SolutionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,6 +206,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/showcase': typeof ShowcaseRoute
+  '/solutions': typeof SolutionsRouteWithChildren
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/agents/create': typeof AgentsCreateRoute
   '/console/agents': typeof ConsoleAgentsRoute
@@ -192,9 +216,11 @@ export interface FileRoutesById {
   '/console/keys': typeof ConsoleKeysRoute
   '/console/live': typeof ConsoleLiveRoute
   '/console/numbers': typeof ConsoleNumbersRoute
+  '/solutions/kidney-care': typeof SolutionsKidneyCareRoute
   '/voice/$agentId': typeof VoiceAgentIdRoute
   '/agents/': typeof AgentsIndexRoute
   '/console/': typeof ConsoleIndexRoute
+  '/solutions/': typeof SolutionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,6 +233,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/showcase'
+    | '/solutions'
     | '/agents/$agentId'
     | '/agents/create'
     | '/console/agents'
@@ -216,9 +243,11 @@ export interface FileRouteTypes {
     | '/console/keys'
     | '/console/live'
     | '/console/numbers'
+    | '/solutions/kidney-care'
     | '/voice/$agentId'
     | '/agents/'
     | '/console/'
+    | '/solutions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -236,9 +265,11 @@ export interface FileRouteTypes {
     | '/console/keys'
     | '/console/live'
     | '/console/numbers'
+    | '/solutions/kidney-care'
     | '/voice/$agentId'
     | '/agents'
     | '/console'
+    | '/solutions'
   id:
     | '__root__'
     | '/'
@@ -249,6 +280,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/showcase'
+    | '/solutions'
     | '/agents/$agentId'
     | '/agents/create'
     | '/console/agents'
@@ -258,9 +290,11 @@ export interface FileRouteTypes {
     | '/console/keys'
     | '/console/live'
     | '/console/numbers'
+    | '/solutions/kidney-care'
     | '/voice/$agentId'
     | '/agents/'
     | '/console/'
+    | '/solutions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -272,11 +306,19 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ShowcaseRoute: typeof ShowcaseRoute
+  SolutionsRoute: typeof SolutionsRouteWithChildren
   VoiceAgentIdRoute: typeof VoiceAgentIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/solutions': {
+      id: '/solutions'
+      path: '/solutions'
+      fullPath: '/solutions'
+      preLoaderRoute: typeof SolutionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/showcase': {
       id: '/showcase'
       path: '/showcase'
@@ -333,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solutions/': {
+      id: '/solutions/'
+      path: '/'
+      fullPath: '/solutions/'
+      preLoaderRoute: typeof SolutionsIndexRouteImport
+      parentRoute: typeof SolutionsRoute
+    }
     '/console/': {
       id: '/console/'
       path: '/'
@@ -353,6 +402,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/voice/$agentId'
       preLoaderRoute: typeof VoiceAgentIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/solutions/kidney-care': {
+      id: '/solutions/kidney-care'
+      path: '/kidney-care'
+      fullPath: '/solutions/kidney-care'
+      preLoaderRoute: typeof SolutionsKidneyCareRouteImport
+      parentRoute: typeof SolutionsRoute
     }
     '/console/numbers': {
       id: '/console/numbers'
@@ -460,6 +516,20 @@ const ConsoleRouteChildren: ConsoleRouteChildren = {
 const ConsoleRouteWithChildren =
   ConsoleRoute._addFileChildren(ConsoleRouteChildren)
 
+interface SolutionsRouteChildren {
+  SolutionsKidneyCareRoute: typeof SolutionsKidneyCareRoute
+  SolutionsIndexRoute: typeof SolutionsIndexRoute
+}
+
+const SolutionsRouteChildren: SolutionsRouteChildren = {
+  SolutionsKidneyCareRoute: SolutionsKidneyCareRoute,
+  SolutionsIndexRoute: SolutionsIndexRoute,
+}
+
+const SolutionsRouteWithChildren = SolutionsRoute._addFileChildren(
+  SolutionsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AgentsRoute: AgentsRouteWithChildren,
@@ -469,6 +539,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ShowcaseRoute: ShowcaseRoute,
+  SolutionsRoute: SolutionsRouteWithChildren,
   VoiceAgentIdRoute: VoiceAgentIdRoute,
 }
 export const routeTree = rootRouteImport

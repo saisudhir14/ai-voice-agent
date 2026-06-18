@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu, Terminal } from 'lucide-react'
 import { VoiceIcon } from '@/components/shared/voice-icon'
 import { Button } from '@/components/ui/button'
+import { MarketingHeader, MarketingFooter } from '@/components/landing'
 import {
   Sheet,
   SheetContent,
@@ -11,6 +12,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useState } from 'react'
+
+const MARKETING_PREFIXES = ['/solutions', '/showcase']
+
+function isMarketingPath(pathname: string) {
+  return pathname === '/' || MARKETING_PREFIXES.some((p) => pathname.startsWith(p))
+}
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,9 +35,22 @@ function RootLayout() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const location = useRouterState({ select: (s) => s.location })
   const isConsole = location.pathname.startsWith('/console')
+  const isMarketing = isMarketingPath(location.pathname)
 
   if (isConsole) {
     return <Outlet />
+  }
+
+  if (isMarketing) {
+    return (
+      <div className="min-h-screen bg-paper text-ink-2 antialiased">
+        <MarketingHeader />
+        <main>
+          <Outlet />
+        </main>
+        <MarketingFooter />
+      </div>
+    )
   }
 
   const handleLogout = () => {
@@ -94,13 +114,44 @@ function RootLayout() {
                   </div>
                 </>
               ) : (
-                <div className="flex items-center gap-4">
-                  <Button variant="ghost" asChild className="text-slate-300 hover:text-white rounded-full px-6">
-                    <Link to="/login">Sign In</Link>
-                  </Button>
-                  <Button asChild className="bg-white text-black hover:bg-slate-200 rounded-full px-6 shadow-xl shadow-white/5">
-                    <Link to="/register">Get Started</Link>
-                  </Button>
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-1 text-sm">
+                    <Link
+                      to="/solutions/kidney-care"
+                      className="px-3 py-2 text-slate-400 transition-colors hover:text-white"
+                    >
+                      Solutions
+                    </Link>
+                    <a
+                      href="#"
+                      className="px-3 py-2 text-slate-400 transition-colors hover:text-white"
+                    >
+                      Customers
+                    </a>
+                    <a
+                      href="#"
+                      className="px-3 py-2 text-slate-400 transition-colors hover:text-white"
+                    >
+                      Pricing
+                    </a>
+                    <a
+                      href="#"
+                      className="px-3 py-2 text-slate-400 transition-colors hover:text-white"
+                    >
+                      Docs
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                    <Button variant="ghost" asChild className="text-slate-300 hover:text-white rounded-full px-5">
+                      <Link to="/login">Sign In</Link>
+                    </Button>
+                    <Button
+                      asChild
+                      className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 px-5 text-white shadow-[0_8px_24px_-8px_rgba(59,130,246,0.5)] hover:from-blue-400 hover:to-cyan-300"
+                    >
+                      <Link to="/register">Get a demo</Link>
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
@@ -165,10 +216,23 @@ function RootLayout() {
                   ) : (
                     <>
                       <Button variant="ghost" className="justify-start h-14 text-lg rounded-xl" asChild onClick={() => setSheetOpen(false)}>
+                        <Link to="/solutions/kidney-care">Solutions</Link>
+                      </Button>
+                      <Button variant="ghost" className="justify-start h-14 text-lg rounded-xl" asChild onClick={() => setSheetOpen(false)}>
+                        <a href="#">Customers</a>
+                      </Button>
+                      <Button variant="ghost" className="justify-start h-14 text-lg rounded-xl" asChild onClick={() => setSheetOpen(false)}>
+                        <a href="#">Pricing</a>
+                      </Button>
+                      <Button variant="ghost" className="justify-start h-14 text-lg rounded-xl" asChild onClick={() => setSheetOpen(false)}>
                         <Link to="/login">Sign In</Link>
                       </Button>
-                      <Button className="justify-start h-14 text-lg bg-white text-black hover:bg-slate-200 rounded-xl" asChild onClick={() => setSheetOpen(false)}>
-                        <Link to="/register">Get Started</Link>
+                      <Button
+                        className="h-14 justify-start rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-lg text-white hover:from-blue-400 hover:to-cyan-300"
+                        asChild
+                        onClick={() => setSheetOpen(false)}
+                      >
+                        <Link to="/register">Get a demo</Link>
                       </Button>
                     </>
                   )}

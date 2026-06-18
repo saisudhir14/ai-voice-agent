@@ -1,245 +1,359 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { motion } from 'framer-motion'
-import { Zap, ArrowRight, MousePointer2, Sparkles, Layers } from 'lucide-react'
-import { VoiceIcon } from '@/components/shared/voice-icon'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { 
-  AnimatedSection, 
-  SpotlightCard, 
-  GradientBackground, 
-  OrbVisualizer 
-} from '@/components/shared'
+import {
+  ArrowRight,
+  Sparkles,
+  Workflow,
+  Database,
+  TerminalSquare,
+  FlaskConical,
+  Phone,
+  MessageSquare,
+  Globe2,
+  Network,
+} from 'lucide-react'
+import { AnimatedSection } from '@/components/shared'
+import {
+  Container,
+  Section,
+  SectionBlock,
+  Display,
+  Lede,
+  Eyebrow,
+  MkBadge,
+  MkButton,
+  Card,
+  LiveDemoWidget,
+  ComparisonGrid,
+  VerticalTabs,
+  HighlightBlocks,
+  CustomerOutcomes,
+  ComplianceShowcase,
+  IntegrationsGrid,
+  FAQAccordion,
+  LogosMarquee,
+} from '@/components/landing'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
-const features = [
+const metrics = [
+  { value: '~520ms', label: 'Median voice latency' },
+  { value: '99.97%', label: 'Pipeline uptime' },
+  { value: '30+', label: 'Languages' },
+  { value: '10M+', label: 'Calls processed' },
+]
+
+const configFeatures = [
   {
-    icon: VoiceIcon,
-    title: 'Neural Voice Synthesis',
-    description: 'Ultra-low latency voices that sound indistinguishable from humans, powered by Cartesia.',
-    color: 'text-white',
+    icon: Workflow,
+    title: 'Visual agent studio',
+    description:
+      'Compose multi-turn agents with branching, guardrails, and human handoff in a drag-and-drop builder. Or just write a prompt.',
   },
   {
-    icon: Sparkles,
-    title: 'Contextual Intelligence',
-    description: 'Agents that understand nuance, emotion, and complex instructions in real-time.',
-    color: 'text-slate-400',
+    icon: Database,
+    title: 'Streaming RAG',
+    description:
+      'Plug in your knowledge base, EHR, CRM, or product catalog. Answers stay grounded — no hallucinated policies, no fabricated SKUs.',
   },
   {
-    icon: Layers,
-    title: 'Seamless Workflows',
-    description: 'Connect your agent to any API, CRM, or database with zero-code integrations.',
-    color: 'text-slate-400',
+    icon: TerminalSquare,
+    title: 'Function calling',
+    description:
+      'Look up an account, book an appointment, escalate to a human, kick off a Slack alert — all from inside the call, in real time.',
+  },
+  {
+    icon: FlaskConical,
+    title: 'Eval & simulation',
+    description:
+      'Run thousands of synthetic conversations against your agent before launch. Catch regressions on every prompt change.',
   },
 ]
 
-const steps = [
-  { title: 'Define Persona', desc: 'Set the tone, role, and knowledge.' },
-  { title: 'Choose Voice', desc: 'Select from 100+ neural voices.' },
-  { title: 'Deploy Anywhere', desc: 'Web, Mobile, or Phone lines.' },
+const channels = [
+  { icon: Phone, title: 'Phone & SIP', body: 'Bring your numbers via SIP trunking or rent ours. Branded caller ID and TCPA-safe outbound included.' },
+  { icon: MessageSquare, title: 'SMS & chat', body: 'The same agent across SMS, web chat, in-app. One brain, every channel.' },
+  { icon: Globe2, title: 'Web widget', body: 'Drop-in voice widget for your site or app. Works on mobile, low-bandwidth, and accessibility tools.' },
+  { icon: Network, title: 'REST + WebSocket API', body: 'Wire the agent into your own product. Streaming transcripts, function-call hooks, and webhooks.' },
 ]
 
-export function HomePage() {
+const faqs = [
+  {
+    q: 'How is this different from a Twilio Flex IVR or a Dialogflow bot?',
+    a: 'Both of those are intent-based — they map a finite set of caller phrases to scripted flows, and fall apart on anything unexpected. We use a real LLM in the loop, so the agent reasons about what the caller actually wants, asks clarifying questions, and improvises within guardrails. The trade-off is that you spend much less time authoring flows and much more time defining policy.',
+  },
+  {
+    q: 'How fast can we launch a production agent?',
+    a: 'Most teams ship a first pilot in 2–3 weeks: one week on use-case scoping and prompting, one on integrations (CRM, EHR, telephony), and one on eval, simulation, and a soft launch behind a single phone number. Heavily regulated rollouts (healthcare, financial services) typically add a security-review week.',
+  },
+  {
+    q: 'Is it HIPAA-compliant? Will you sign a BAA?',
+    a: 'Yes. We sign Business Associate Agreements. PHI is encrypted at rest with configurable retention, real-time PII redaction is applied before transcripts are stored, and your audio is never used to train base models. Healthcare customers can pin processing to a specific US region.',
+  },
+  {
+    q: 'What about TCPA / outbound calling regulations?',
+    a: 'Outbound is gated behind a consent-management module. You can import a do-not-call list, enforce quiet-hours per timezone, cap attempts per contact, and capture verbal opt-outs that propagate across channels in seconds.',
+  },
+  {
+    q: 'Can the agent transfer to a human?',
+    a: 'Yes — warm transfer, cold transfer, or asynchronous escalation (Slack/email/ticket). The agent can summarize the call, paste the transcript, and brief the human on context before connecting.',
+  },
+  {
+    q: 'How do you handle voice quality and latency?',
+    a: 'Our voice stack is built on Cartesia\'s neural TTS, with a proprietary turn-taking model and streaming STT. Median end-to-end latency runs under 600ms — below the threshold where callers start to notice. We also support voice cloning from 30 seconds of brand audio.',
+  },
+]
+
+function HomePage() {
   return (
-    <div className="relative overflow-hidden min-h-screen bg-nebula-deep text-slate-200">
-      <GradientBackground intensity="high" />
-      
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-left">
+    <>
+      {/* ============ HERO ============ */}
+      <Section tone="paper" spacing="compact" className="overflow-hidden pt-28 sm:pt-32">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="mk-grid absolute inset-x-0 top-0 h-[420px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+          <div className="absolute left-1/2 top-[-10%] h-[480px] w-[820px] -translate-x-1/2 rounded-full bg-brand/10 blur-[120px]" />
+        </div>
+        <Container className="flex flex-col items-center text-center">
+          <AnimatedSection delay={0.05}>
+            <MkBadge variant="brand" icon={<Sparkles className="h-3.5 w-3.5" />}>
+              In production at healthcare, finance &amp; retail leaders
+            </MkBadge>
+          </AnimatedSection>
+          <AnimatedSection delay={0.1}>
+            <Display as="h1" size="2xl" className="mt-7 max-w-4xl">
+              The voice AI platform every customer call deserves.
+            </Display>
+          </AnimatedSection>
+          <AnimatedSection delay={0.15}>
+            <Lede className="mt-6 max-w-2xl">
+              Deploy LLM-native voice agents that sound human, take action, and scale across every industry — from
+              patient outreach to card activation to cart recovery. One platform. Any channel. Production-grade from day
+              one.
+            </Lede>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <MkButton asChild size="lg" variant="primary">
+                <Link to="/register">
+                  Get a live demo
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </MkButton>
+              <MkButton asChild size="lg" variant="secondary">
+                <Link to="/solutions/kidney-care">See it for kidney care</Link>
+              </MkButton>
+            </div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.25}>
+            <dl className="mt-16 grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-8 border-t border-line pt-10 sm:grid-cols-4">
+              {metrics.map((m) => (
+                <div key={m.label} className="text-center">
+                  <dt className="sr-only">{m.label}</dt>
+                  <dd className="font-display text-display-sm text-ink">{m.value}</dd>
+                  <p className="mt-1 text-xs text-ink-3">{m.label}</p>
+                </div>
+              ))}
+            </dl>
+          </AnimatedSection>
+        </Container>
+      </Section>
+
+      {/* ============ LOGOS ============ */}
+      <Section tone="paper" spacing="compact" className="!py-12">
+        <Container>
+          <LogosMarquee />
+        </Container>
+      </Section>
+
+      {/* ============ LIVE DEMO ============ */}
+      <Section tone="paper-2" spacing="default" divider>
+        <Container size="narrow">
+          <div className="mb-12 flex flex-col items-center gap-4 text-center">
+            <AnimatedSection delay={0.05}>
+              <Eyebrow>Try it now</Eyebrow>
+            </AnimatedSection>
+            <AnimatedSection delay={0.1}>
+              <Display as="h2" size="md">
+                Don’t read about it. Have it call you.
+              </Display>
+            </AnimatedSection>
+            <AnimatedSection delay={0.15}>
+              <Lede className="max-w-xl">Pick a use case. Drop your number. An agent dials you in seconds.</Lede>
+            </AnimatedSection>
+          </div>
+          <AnimatedSection delay={0.2}>
+            <LiveDemoWidget />
+          </AnimatedSection>
+        </Container>
+      </Section>
+
+      {/* ============ COMPARISON ============ */}
+      <SectionBlock
+        tone="paper"
+        divider
+        eyebrow="Overview"
+        title="The third generation of voice interfaces."
+        lede="IVRs route. NLP bots match intents. LLM-native agents have actual conversations — and that changes what voice automation can do."
+      >
+        <ComparisonGrid />
+      </SectionBlock>
+
+      {/* ============ HIGHLIGHTS ============ */}
+      <SectionBlock
+        tone="paper-2"
+        divider
+        eyebrow="Highlights"
+        title="Built so callers forget they’re talking to AI."
+        lede="Three things separate a usable voice agent from a memorable one: response time, voice quality, and turn-taking. We obsess over all three."
+      >
+        <HighlightBlocks />
+      </SectionBlock>
+
+      {/* ============ VERTICALS ============ */}
+      <SectionBlock
+        id="customers"
+        tone="paper"
+        divider
+        eyebrow="Solutions"
+        title="One platform. Every industry."
+        lede="Healthcare, financial services, retail, hospitality, logistics — the platform stays the same. The agents, the data, and the integrations adapt."
+      >
+        <VerticalTabs />
+      </SectionBlock>
+
+      {/* ============ OUTCOMES ============ */}
+      <SectionBlock
+        tone="paper-2"
+        divider
+        eyebrow="Outcomes"
+        title="The numbers customers care about."
+        lede="No vanity metrics. These are the levers that show up in board decks."
+      >
+        <CustomerOutcomes />
+      </SectionBlock>
+
+      {/* ============ CONFIGURABILITY ============ */}
+      <SectionBlock
+        id="platform"
+        tone="paper"
+        divider
+        eyebrow="The platform"
+        title="Configure deeply — without code, until you want code."
+        lede="Start with a prompt, ship a pilot in two weeks, then go deep with custom tools, evals, and your own data."
+      >
+        <div className="grid gap-5 md:grid-cols-2">
+          {configFeatures.map((f, i) => (
+            <AnimatedSection key={f.title} delay={0.05 * i}>
+              <Card interactive padding="lg" className="flex h-full gap-5">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-tint text-brand-ink">
+                  <f.icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold text-ink">{f.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.description}</p>
+                </div>
+              </Card>
+            </AnimatedSection>
+          ))}
+        </div>
+      </SectionBlock>
+
+      {/* ============ CHANNELS ============ */}
+      <SectionBlock
+        tone="paper-2"
+        divider
+        eyebrow="Channels"
+        title="Voice first. Every channel after."
+        lede="One agent definition powers your phone line, your web widget, your SMS funnel, and your API integrations."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {channels.map((c, i) => (
+            <AnimatedSection key={c.title} delay={0.04 * i}>
+              <Card padding="md" className="h-full">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-tint text-brand-ink">
+                  <c.icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-5 text-base font-semibold text-ink">{c.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-2">{c.body}</p>
+              </Card>
+            </AnimatedSection>
+          ))}
+        </div>
+      </SectionBlock>
+
+      {/* ============ COMPLIANCE ============ */}
+      <SectionBlock
+        id="compliance"
+        tone="paper"
+        divider
+        eyebrow="Trust & compliance"
+        title="Built for the calls regulators ask about."
+        lede="Compliance isn’t a checkbox at the end of procurement — it’s a first-class feature of the platform."
+      >
+        <ComplianceShowcase />
+      </SectionBlock>
+
+      {/* ============ INTEGRATIONS ============ */}
+      <SectionBlock
+        tone="paper-2"
+        divider
+        eyebrow="Integrations"
+        title="Drop into the stack you already run."
+        lede="Telephony, EHRs, CRMs, support, data — connectors that ship the day you sign."
+      >
+        <IntegrationsGrid />
+      </SectionBlock>
+
+      {/* ============ FAQ ============ */}
+      <SectionBlock
+        tone="paper"
+        divider
+        eyebrow="FAQ"
+        title="The questions we get on every first call."
+      >
+        <FAQAccordion items={faqs} />
+      </SectionBlock>
+
+      {/* ============ FINAL CTA ============ */}
+      <Section tone="paper" spacing="default" divider>
+        <Container size="narrow">
+          <Card tone="ink" padding="lg" className="overflow-hidden text-center sm:!p-16">
+            <div className="pointer-events-none absolute inset-0 -z-0 opacity-60">
+              <div className="absolute left-1/2 top-0 h-64 w-[600px] -translate-x-1/2 rounded-full bg-brand/30 blur-[120px]" />
+            </div>
+            <div className="relative">
+              <AnimatedSection delay={0.05}>
+                <Eyebrow onDark>Let’s build</Eyebrow>
+              </AnimatedSection>
               <AnimatedSection delay={0.1}>
-                <Badge className="mb-6 bg-white/5 border-white/10 text-slate-400 backdrop-blur-md px-4 py-1.5 rounded-full">
-                  <span className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-500"></span>
-                    </span>
-                    The Future of Voice AI is Here
-                  </span>
-                </Badge>
+                <Display as="h2" size="md" onDark className="mt-4">
+                  Your next call could be your best one.
+                </Display>
               </AnimatedSection>
-
+              <AnimatedSection delay={0.15}>
+                <Lede onDark className="mx-auto mt-5 max-w-xl">
+                  90-day pilots, fixed price, measurable outcomes. We’ll come to your team with a tailored agent — built
+                  from your data — within two weeks of kickoff.
+                </Lede>
+              </AnimatedSection>
               <AnimatedSection delay={0.2}>
-                <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-[0.9] tracking-tighter">
-                  Crafting 
-                  <br />
-                  <span className="text-gradient-nebula">Infinite</span>
-                  <br />
-                  Conversations
-                </h1>
-              </AnimatedSection>
-
-              <AnimatedSection delay={0.3}>
-                <p className="text-lg md:text-xl text-slate-400 max-w-xl mb-10 leading-relaxed">
-                  Deploy sophisticated, human-like voice agents that handle support, 
-                  sales, and operations autonomously. Built for the next generation of business.
-                </p>
-              </AnimatedSection>
-
-              <AnimatedSection delay={0.4}>
-                <div className="flex flex-wrap items-center gap-6">
-                  <Button size="lg" asChild className="bg-white text-black hover:bg-slate-200 rounded-full px-8 h-14 text-lg font-medium group">
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                  <MkButton asChild size="lg" variant="on-ink">
                     <Link to="/register">
-                      Get Started Free
-                      <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                      Book a pilot conversation
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
-                  </Button>
-                  <Button variant="ghost" asChild className="text-slate-300 hover:text-white group">
-                    <Link to="/showcase">
-                      View Showcase <MousePointer2 className="h-4 w-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </Button>
+                  </MkButton>
+                  <MkButton asChild size="lg" variant="ghost-on-ink">
+                    <Link to="/showcase">Or watch a demo</Link>
+                  </MkButton>
                 </div>
               </AnimatedSection>
             </div>
-
-            <div className="relative flex justify-center items-center">
-              <AnimatedSection delay={0.5} className="w-full">
-                <div className="relative aspect-square flex items-center justify-center">
-                  {/* Decorative Elements */}
-                  <div className="absolute inset-0 bg-slate-500/10 rounded-full blur-[120px] animate-pulse" />
-                  <OrbVisualizer size="lg" className="z-10" />
-
-                  {/* Floating Labels */}
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute top-10 right-0 glass-plus p-4 rounded-2xl z-20"
-                  >
-                    <div className="text-xs text-slate-400 font-mono mb-1">Latency</div>
-                    <div className="text-xl font-bold text-white tracking-tight">42ms</div>
-                  </motion.div>
-
-                  <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 5, repeat: Infinity }}
-                    className="absolute bottom-10 left-0 glass-plus p-4 rounded-2xl z-20"
-                  >
-                    <div className="text-xs text-slate-400 font-mono mb-1">Accuracy</div>
-                    <div className="text-xl font-bold text-white tracking-tight">99.2%</div>
-                  </motion.div>
-                </div>
-              </AnimatedSection>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative py-32 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Designed for Performance</h2>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Everything you need to scale your voice operations without the overhead.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <AnimatedSection key={index} delay={0.1 * index}>
-                <SpotlightCard>
-                  <feature.icon className={`h-12 w-12 mb-6 ${feature.color}`} />
-                  <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
-                  <p className="text-slate-400 leading-relaxed">{feature.description}</p>
-                </SpotlightCard>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Workflow Section */}
-      <section className="relative py-32 px-4 bg-white/[0.02]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-8">From Concept to <span className="text-slate-300">Live</span> in Seconds</h2>
-              <div className="space-y-8">
-                {steps.map((step, i) => (
-                  <div key={i} className="flex gap-6">
-                    <div className="h-10 w-10 shrink-0 rounded-full bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-400 font-bold">
-                      {i + 1}
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-white mb-1">{step.title}</h4>
-                      <p className="text-slate-400">{step.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="glass-plus rounded-3xl p-8 border-white/5 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4">
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-                </div>
-              </div>
-              <div className="space-y-4 pt-6">
-                <div className="h-4 w-3/4 bg-white/5 rounded-full animate-pulse" />
-                <div className="h-4 w-1/2 bg-white/5 rounded-full animate-pulse" />
-                <div className="space-y-2 py-4">
-                  <div className="h-12 w-full bg-slate-500/10 border border-slate-500/20 rounded-xl flex items-center px-4">
-                    <div className="h-2 w-2 rounded-full bg-slate-400 mr-3" />
-                    <span className="text-sm font-mono text-slate-400">system.initialize()</span>
-                  </div>
-                  <div className="h-12 w-full bg-slate-600/10 border border-slate-600/20 rounded-xl flex items-center px-4">
-                    <div className="h-2 w-2 rounded-full bg-slate-400 mr-3" />
-                    <span className="text-sm font-mono text-slate-400">voice.load("Cartesia_Sonic")</span>
-                  </div>
-                </div>
-                <div className="h-4 w-2/3 bg-white/5 rounded-full animate-pulse" />
-              </div>
-              {/* Interactive Hover Glow */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-slate-500/5 to-slate-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="relative py-32 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <SpotlightCard className="p-16 text-center border-white/10 overflow-hidden">
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-slate-500/20 rounded-full blur-[100px]" />
-            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-slate-600/20 rounded-full blur-[100px]" />
-
-            <Zap className="h-16 w-16 text-white mx-auto mb-8 animate-pulse" />
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready for Lift Off?</h2>
-            <p className="text-slate-400 text-xl mb-10">
-              Join the businesses shaping the future of voice technology.
-            </p>
-            <Button size="lg" asChild className="bg-slate-500 hover:bg-slate-400 text-white rounded-full px-10 h-16 text-lg font-bold">
-              <Link to="/register">Create Your Agent Now</Link>
-            </Button>
-          </SpotlightCard>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 py-16 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-3">
-            <VoiceIcon className="h-10 w-10 text-white" />
-            <span className="font-display font-bold text-xl tracking-tight">VoiceAI<span className="text-slate-400">.</span></span>
-          </div>
-          <div className="flex gap-8 text-slate-400 text-sm">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Docs</a>
-          </div>
-          <p className="text-slate-500 text-sm">
-            © 2026 VoiceAI Platform. Built with Cartesia.
-          </p>
-        </div>
-      </footer>
-    </div>
+          </Card>
+        </Container>
+      </Section>
+    </>
   )
 }

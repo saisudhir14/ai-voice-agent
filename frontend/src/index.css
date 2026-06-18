@@ -2,97 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-  Lattice theme tokens — drop-in replacement for frontend/src/index.css
-  Light is default; add data-theme="dark" on <html> for dark.
-  Optional: data-accent="blue|violet|orange" to re-tint the single accent.
-  Optional: data-density="compact|comfortable" to change row height.
-  All values are HSL channels so they slot into shadcn's hsl(var(--x)) tokens.
-*/
-
 @layer base {
   :root {
-    /* shadcn semantic tokens (HSL channels) */
-    --background: 0 0% 98%;          /* #fafafa */
-    --foreground: 240 6% 10%;        /* #18181b */
-    --card: 0 0% 100%;
-    --card-foreground: 240 6% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 6% 10%;
-    --primary: 160 50% 40%;          /* emerald accent */
+    --background: 220 20% 5%;
+    --foreground: 210 40% 98%;
+    --card: 220 18% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 18% 8%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 240 4% 46%;  /* text-2 */
-    --accent: 160 50% 40%;
+    --secondary: 220 14% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 220 14% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 12 75% 52%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 91%;              /* #e7e7e7 */
-    --input: 0 0% 91%;
-    --ring: 160 50% 40%;
-    --radius: 0.375rem;              /* 6px controls; cards use rounded-[10px] */
+    --border: 220 13% 14%;
+    --input: 220 13% 14%;
+    --ring: 217 91% 60%;
+    --radius: 0.5rem;
 
-    /* Lattice raw tokens (use via var() in custom CSS) */
+    --bg: #0a0c10;
+    --surface: #12141a;
+    --surface-2: #1a1d26;
+    --border-strong: #252a35;
+    --text: #e2e8f0;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+    --row: 40px;
+
+    /* ============================================================
+       MARKETING DESIGN TOKENS — single source of truth (light)
+       Used by the public marketing site. Semantic, not literal.
+       ============================================================ */
+
+    /* Ink (text) ramp */
+    --mk-ink:        #0B1020;  /* display headings */
+    --mk-ink-2:      #3B4256;  /* body copy */
+    --mk-ink-3:      #6B7280;  /* muted / captions */
+    --mk-ink-on:     #FFFFFF;  /* text on dark/brand surfaces */
+
+    /* Paper (surface) ramp */
+    --mk-paper:      #FFFFFF;  /* page background */
+    --mk-paper-2:    #F6F7F9;  /* alternating section */
+    --mk-paper-3:    #EEF1F5;  /* deeper inset surface */
+    --mk-ink-surface:#0B1020;  /* dark "navy" feature surface */
+
+    /* Lines / borders */
+    --mk-line:       #E6E8EC;  /* hairline */
+    --mk-line-2:     #D6DAE1;  /* stronger divider */
+
+    /* Brand — a single restrained accent */
+    --mk-brand:      #2F6BFF;  /* primary accent */
+    --mk-brand-ink:  #1E50D6;  /* accent text / hover */
+    --mk-brand-tint: #ECF1FF;  /* accent wash background */
+    --mk-brand-ring: rgba(47,107,255,0.35);
+
+    /* Elevation (soft, light-mode) */
+    --mk-shadow-xs:  0 1px 2px rgba(11,16,32,0.04);
+    --mk-shadow-sm:  0 1px 3px rgba(11,16,32,0.06), 0 1px 2px rgba(11,16,32,0.04);
+    --mk-shadow-md:  0 6px 20px rgba(11,16,32,0.08);
+    --mk-shadow-lg:  0 18px 50px rgba(11,16,32,0.12);
+
+    /* Layout */
+    --mk-container:  1200px;
+  }
+
+  [data-theme="light"] {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 217 91% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 50%;
+
     --bg: #fafafa;
     --surface: #ffffff;
-    --surface-2: #f5f5f5;
-    --border-strong: #d4d4d4;
-    --text: #18181b;
-    --text-2: #52525b;
-    --text-3: #a1a1aa;
-    --l-accent: oklch(0.62 0.13 160);
-    --l-accent-soft: oklch(0.94 0.04 160);
-    --l-danger: oklch(0.58 0.18 25);
-    --l-warn: oklch(0.72 0.13 75);
-    --l-info: oklch(0.60 0.12 240);
+    --surface-2: #f1f5f9;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --text-2: #475569;
+    --text-3: #94a3b8;
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
-    --row: 40px;
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
   }
 
-  [data-theme="dark"] {
-    --background: 0 0% 4%;           /* #0a0a0a */
-    --foreground: 240 14% 96%;
-    --card: 240 5% 7%;               /* #111113 */
-    --card-foreground: 240 14% 96%;
-    --popover: 240 5% 7%;
-    --popover-foreground: 240 14% 96%;
-    --primary: 160 45% 45%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 10%;
-    --secondary-foreground: 240 14% 96%;
-    --muted: 240 5% 10%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 160 45% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 12 65% 48%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 15%;            /* #232428 */
-    --input: 240 6% 15%;
-    --ring: 160 45% 45%;
-
-    --bg: #0a0a0a;
-    --surface: #111113;
-    --surface-2: #16171a;
-    --border-strong: #2e3036;
-    --text: #f5f5f7;
-    --text-2: #a1a1aa;
-    --text-3: #6b6b72;
-    --l-accent-soft: oklch(0.22 0.04 160);
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
-  }
-
-  /* Accent variants (re-tint the single accent) */
-  [data-accent="blue"]   { --primary: 250 70% 55%; --accent: 250 70% 55%; --ring: 250 70% 55%; --l-accent: oklch(0.60 0.16 250); }
-  [data-accent="violet"] { --primary: 285 65% 55%; --accent: 285 65% 55%; --ring: 285 65% 55%; --l-accent: oklch(0.58 0.18 295); }
-  [data-accent="orange"] { --primary: 30 85% 55%;  --accent: 30 85% 55%;  --ring: 30 85% 55%;  --l-accent: oklch(0.68 0.16 55); }
-
-  /* Density */
   [data-density="compact"]     { --row: 34px; }
   [data-density="comfortable"] { --row: 48px; }
 
@@ -101,8 +115,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    font-size: 13.5px;
-    line-height: 1.45;
+    font-size: 14px;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv11", "ss01";
@@ -110,15 +124,62 @@
 
   h1, h2, h3, h4, h5, h6 { @apply tracking-tight; font-weight: 600; }
 
-  /* Tabular monospace numerics + IDs */
   .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
   .tab-nums { font-variant-numeric: tabular-nums; }
 
-  /* Scrollbars */
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; border: 2px solid var(--bg); }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
 
   :focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; border-radius: 4px; }
+}
+
+@layer utilities {
+  .bg-nebula-deep {
+    background-color: #0a0c10;
+  }
+
+  .text-gradient-nebula {
+    background: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(230 80% 68%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-plus {
+    background: rgba(18, 20, 26, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Marketing: dotted grid background used behind hero/sections */
+  .mk-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(11, 16, 32, 0.06) 1px, transparent 0);
+    background-size: 32px 32px;
+  }
+
+  /* Marketing: infinite logo marquee */
+  .mk-marquee {
+    animation: mk-marquee 38s linear infinite;
+  }
+}
+
+@keyframes mk-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Respect user motion preferences across the whole app */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .mk-marquee { animation: none !important; }
 }
