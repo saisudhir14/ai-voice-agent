@@ -26,7 +26,6 @@ import {
   LiveDemoWidget,
   ComplianceShowcase,
   FAQAccordion,
-  CustomerOutcomes,
 } from '@/components/landing'
 
 export const Route = createFileRoute('/solutions/kidney-care')({
@@ -140,33 +139,6 @@ const faqs = [
   {
     q: 'What about TCPA and patient consent?',
     a: 'Patient consent is captured at the EMR level and synced into our consent ledger; the agent will not place a call without an active consent record. Quiet hours, attempt caps, and verbal opt-outs are enforced platform-side.',
-  },
-]
-
-const kidneyOutcomes = [
-  {
-    metric: '38%',
-    metricLabel: 'fewer missed treatments',
-    story:
-      'A regional dialysis network deployed pre-treatment check-ins across 42 outpatient centers. Within one quarter, missed treatments dropped 38% and after-hours nurse-line volume fell by half.',
-    attribution: 'Chief Medical Officer · Kidney care network',
-    industry: 'Kidney care',
-  },
-  {
-    metric: '27%',
-    metricLabel: 'reduction in 30-day readmits',
-    story:
-      'Post-discharge follow-up at 24h, 72h, and 14d caught early decompensation and rescheduled outpatient appointments. The drop in 30-day readmissions paid for the program seven times over in the first year.',
-    attribution: 'VP Integrated Care · Multi-state CKCC entity',
-    industry: 'Value-based care',
-  },
-  {
-    metric: '100%',
-    metricLabel: 'KDQOL-36 capture rate',
-    story:
-      'Conversational survey replaced paper packets and manual call campaigns. Bilingual EN/ES coverage, 6-minute average call length, and full EHR write-back — no clipboard required.',
-    attribution: 'Director of Quality · Dialysis provider',
-    industry: 'Quality / QIP',
   },
 ]
 
@@ -343,11 +315,6 @@ function KidneyCarePage() {
         <AnimatedSection>
           <LiveDemoWidget />
         </AnimatedSection>
-      </SectionBlock>
-
-      {/* ============ OUTCOMES ============ */}
-      <SectionBlock tone="paper-2" divider eyebrow="Outcomes" title="The metrics your medical-affairs team will measure.">
-        <CustomerOutcomes outcomes={kidneyOutcomes} />
       </SectionBlock>
 
       {/* ============ ROI ============ */}

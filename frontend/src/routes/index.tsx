@@ -26,11 +26,9 @@ import {
   ComparisonGrid,
   VerticalTabs,
   HighlightBlocks,
-  CustomerOutcomes,
   ComplianceShowcase,
   IntegrationsGrid,
   FAQAccordion,
-  LogosMarquee,
 } from '@/components/landing'
 
 export const Route = createFileRoute('/')({
@@ -159,13 +157,6 @@ function HomePage() {
         </Container>
       </Section>
 
-      {/* ============ LOGOS ============ */}
-      <Section tone="paper" spacing="compact" className="!py-12">
-        <Container>
-          <LogosMarquee />
-        </Container>
-      </Section>
-
       {/* ============ LIVE DEMO ============ */}
       <Section tone="paper-2" spacing="default" divider>
         <Container size="narrow">
@@ -220,17 +211,6 @@ function HomePage() {
         lede="Healthcare, financial services, retail, hospitality, logistics — the platform stays the same. The agents, the data, and the integrations adapt."
       >
         <VerticalTabs />
-      </SectionBlock>
-
-      {/* ============ OUTCOMES ============ */}
-      <SectionBlock
-        tone="paper-2"
-        divider
-        eyebrow="Outcomes"
-        title="The numbers customers care about."
-        lede="No vanity metrics. These are the levers that show up in board decks."
-      >
-        <CustomerOutcomes />
       </SectionBlock>
 
       {/* ============ CONFIGURABILITY ============ */}

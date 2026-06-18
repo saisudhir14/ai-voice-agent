@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react'
-import { SpotlightCard } from './spotlight-card'
+import { Card } from '@/components/landing/card'
 
 interface StatCardProps {
   label: string
@@ -10,21 +10,21 @@ interface StatCardProps {
 
 export function StatCard({ label, value, icon: Icon, trend }: StatCardProps) {
   return (
-    <SpotlightCard>
+    <Card elevated padding="md">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-400 mb-1">{label}</p>
-          <h3 className="text-2xl font-bold text-white tracking-tight">{value}</h3>
+          <p className="text-sm font-medium text-ink-3 mb-1">{label}</p>
+          <h3 className="text-2xl font-display font-semibold text-ink tracking-tight tab-nums">{value}</h3>
           {trend && (
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
-              <span>↑</span> {trend}
+            <p className="text-xs text-ink-3 mt-1 flex items-center gap-1">
+              <span className="text-brand">↑</span> {trend}
             </p>
           )}
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center">
-          <Icon className="h-6 w-6 text-slate-400" />
+        <div className="h-11 w-11 rounded-xl bg-brand-tint flex items-center justify-center">
+          <Icon className="h-5 w-5 text-brand-ink" />
         </div>
       </div>
-    </SpotlightCard>
+    </Card>
   )
 }

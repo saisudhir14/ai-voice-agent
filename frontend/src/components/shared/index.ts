@@ -1,4 +1,5 @@
 // Barrel export for shared components
+export * from "./app-header"
 export * from "./page-header"
 export * from "./empty-state"
 export * from "./form-field"
