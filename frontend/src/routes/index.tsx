@@ -203,7 +203,7 @@ function HomePage() {
 
       {/* ============ VERTICALS ============ */}
       <SectionBlock
-        id="customers"
+        id="use-cases"
         tone="paper"
         divider
         eyebrow="Solutions"

@@ -10,7 +10,6 @@ const columns: FooterColumn[] = [
     heading: 'Product',
     links: [
       { label: 'Platform', href: '/#platform' },
-      { label: 'Pricing', href: '#' },
       { label: 'Security', href: '/#compliance' },
       { label: 'Changelog', href: '#' },
     ],
@@ -28,7 +27,7 @@ const columns: FooterColumn[] = [
     heading: 'Company',
     links: [
       { label: 'About', href: '#' },
-      { label: 'Customers', href: '/#customers' },
+      { label: 'Use cases', href: '/#use-cases' },
       { label: 'Careers', href: '#' },
       { label: 'Contact', href: '#' },
     ],
@@ -36,7 +35,6 @@ const columns: FooterColumn[] = [
   {
     heading: 'Resources',
     links: [
-      { label: 'Documentation', href: '#' },
       { label: 'Trust center', href: '#' },
       { label: 'Blog', href: '#' },
       { label: 'Status', href: '#' },

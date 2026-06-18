@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Pause, ArrowLeft, Sparkles, ShoppingBag, Headphones } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { 
-  GradientBackground, 
-  OrbVisualizer, 
-  AnimatedSection 
-} from '@/components/shared'
+import { Play, Pause, Sparkles, ShoppingBag, Headphones } from 'lucide-react'
+import { MkButton } from '@/components/landing/mk-button'
+import { Card } from '@/components/landing/card'
+import { MkBadge } from '@/components/landing/primitives'
+import { Container, Section, Eyebrow, Display, Lede } from '@/components/landing/primitives'
+import { OrbVisualizer, AnimatedSection } from '@/components/shared'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/showcase')({
   component: ShowcasePage,
@@ -22,7 +20,6 @@ const DEMO_AGENTS = [
     role: 'Customer Support',
     description: 'Empathetic and efficient support agent that handles returns and FAQs.',
     icon: Headphones,
-    color: 'text-slate-400',
     transcript: "I'd be happy to help you with that return. Could you please provide your order number?",
   },
   {
@@ -31,8 +28,7 @@ const DEMO_AGENTS = [
     role: 'Sales Representative',
     description: 'Persuasive and knowledgeable product expert focused on conversion.',
     icon: ShoppingBag,
-    color: 'text-slate-400',
-    transcript: "Based on your usage patterns, the Pro plan would actually save you 20% annually. Shall we switch?",
+    transcript: 'Based on your usage patterns, the Pro plan would save you 20% annually. Shall we switch?',
   },
   {
     id: 'creative',
@@ -40,8 +36,7 @@ const DEMO_AGENTS = [
     role: 'Creative Assistant',
     description: 'Imaginative partner for brainstorming and content generation.',
     icon: Sparkles,
-    color: 'text-slate-400',
-    transcript: "That's a fascinating concept! What if we explored the angle of sustainability in that narrative?",
+    transcript: "That's a fascinating concept! What if we explored sustainability in that narrative?",
   },
 ]
 
@@ -53,134 +48,132 @@ function ShowcasePage() {
     if (activeAgent === id && isPlaying) {
       setIsPlaying(false)
       setActiveAgent(null)
-    } else {
-      setActiveAgent(id)
-      setIsPlaying(true)
-      // Simulate playback duration
-      setTimeout(() => setIsPlaying(false), 4000)
+      return
     }
+    setActiveAgent(id)
+    setIsPlaying(true)
+    setTimeout(() => setIsPlaying(false), 4000)
   }
 
-  return (
-    <div className="relative min-h-screen bg-nebula-deep text-slate-200 overflow-hidden">
-      <GradientBackground intensity="medium" />
-      
-      {/* Header */}
-      <header className="relative z-10 pt-8 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back to Home</span>
-          </Link>
-        </div>
-      </header>
+  const current = DEMO_AGENTS.find((a) => a.id === activeAgent)
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12">
-        <div className="text-center mb-16">
+  return (
+    <Section tone="paper" spacing="compact" className="pt-28 sm:pt-32">
+      <Container>
+        <div className="mb-12 text-center">
           <AnimatedSection>
-            <Badge className="mb-6 bg-white/5 border-white/10 text-slate-400 backdrop-blur-md px-4 py-1.5 rounded-full">
-              Showcase Gallery
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Experience <span className="text-gradient-nebula">Human-Level</span> AI
-            </h1>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Listen to our specialized agents in action. No signup required.
-            </p>
+            <Eyebrow className="mb-4">Showcase</Eyebrow>
+            <Display as="h1" size="lg" className="mb-4">
+              Hear our agents in action
+            </Display>
+            <Lede className="mx-auto max-w-2xl">
+              Listen to specialized voice agents. No signup required.
+            </Lede>
           </AnimatedSection>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Visualizer Stage */}
-          <div className="order-2 lg:order-1">
-            <AnimatedSection delay={0.2} className="relative">
-              <div className="glass-plus rounded-3xl p-8 md:p-12 aspect-square flex flex-col items-center justify-center relative overflow-hidden border-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-slate-500/5" />
-                
-                <OrbVisualizer 
-                  size="lg" 
-                  className={`transition-all duration-700 ${isPlaying ? 'scale-125' : 'scale-100 opacity-50'}`} 
-                />
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
+          {/* Visualizer stage */}
+          <AnimatedSection delay={0.1} className="order-2 lg:order-1">
+            <Card
+              tone="paper-2"
+              elevated
+              padding="lg"
+              className="relative flex aspect-square flex-col items-center justify-center overflow-hidden"
+            >
+              <div className="pointer-events-none absolute inset-0 mk-grid opacity-30" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,color-mix(in_srgb,var(--orb-sky)_22%,transparent)_0%,color-mix(in_srgb,var(--orb-dawn)_12%,transparent)_40%,transparent_68%)]" />
 
-                <AnimatePresence mode="wait">
-                  {activeAgent ? (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className="absolute bottom-12 text-center w-full px-8"
-                    >
-                      <div className={`text-sm font-mono mb-2 ${DEMO_AGENTS.find(a => a.id === activeAgent)?.color}`}>
-                        {isPlaying ? 'Speaking...' : 'Paused'}
-                      </div>
-                      <p className="text-xl md:text-2xl font-medium text-white leading-relaxed">
-                        "{DEMO_AGENTS.find(a => a.id === activeAgent)?.transcript}"
-                      </p>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute bottom-12 text-center text-slate-500"
-                    >
-                      Select an agent to hear them speak
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+              <div className="relative flex flex-1 items-center justify-center pb-16 pt-8">
+                <OrbVisualizer size="lg" active={isPlaying} />
               </div>
-            </AnimatedSection>
-          </div>
 
-          {/* Agent Selection */}
-          <div className="order-1 lg:order-2 space-y-6">
-            {DEMO_AGENTS.map((agent, index) => (
-              <AnimatedSection key={agent.id} delay={0.1 * (index + 3)}>
-                <Card 
-                  className={`p-6 bg-white/5 border-white/10 hover:bg-white/10 transition-all cursor-pointer group ${activeAgent === agent.id ? 'ring-1 ring-slate-500/50 bg-white/10' : ''}`}
-                  onClick={() => handlePlay(agent.id)}
-                >
-                  <div className="flex items-start gap-5">
-                    <div className={`h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                      <agent.icon className={`h-6 w-6 ${agent.color}`} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-bold text-white">{agent.name}</h3>
-                        <Badge variant="outline" className="border-white/10 text-xs text-slate-400">
-                          {agent.role}
-                        </Badge>
-                      </div>
-                      <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                        {agent.description}
-                      </p>
-                      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-slate-500 group-hover:text-slate-400 transition-colors">
-                        {activeAgent === agent.id && isPlaying ? (
-                          <>
-                            <Pause className="h-3 w-3" /> Pause Demo
-                          </>
-                        ) : (
-                          <>
-                            <Play className="h-3 w-3" /> Play Demo
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </AnimatedSection>
-            ))}
+              <AnimatePresence mode="wait">
+                {current ? (
+                  <motion.div
+                    key={activeAgent}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    className="absolute bottom-8 left-6 right-6 text-center"
+                  >
+                    <MkBadge variant={isPlaying ? 'brand' : 'neutral'} className="mb-3">
+                      {isPlaying ? 'Speaking' : 'Paused'}
+                    </MkBadge>
+                    <p className="font-display text-lg leading-relaxed text-ink sm:text-xl">
+                      &ldquo;{current.transcript}&rdquo;
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.p
+                    key="idle"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute bottom-10 text-sm text-ink-3"
+                  >
+                    Select an agent to hear them speak
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </Card>
+          </AnimatedSection>
 
-            <AnimatedSection delay={0.6}>
-              <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-slate-500/10 to-slate-500/10 border border-slate-500/20 text-center">
-                <p className="text-slate-300 mb-4">Want to build your own custom agent?</p>
-                <Button asChild className="w-full bg-white text-black hover:bg-slate-200">
-                  <Link to="/register">Start Building Free</Link>
-                </Button>
-              </div>
+          {/* Agent list */}
+          <div className="order-1 space-y-4 lg:order-2">
+            {DEMO_AGENTS.map((agent, index) => {
+              const selected = activeAgent === agent.id
+              const playing = selected && isPlaying
+              return (
+                <AnimatedSection key={agent.id} delay={0.08 * (index + 1)}>
+                  <Card
+                    interactive
+                    padding="md"
+                    className={cn(
+                      'cursor-pointer transition-colors',
+                      selected && 'border-brand bg-brand-tint/30',
+                    )}
+                    onClick={() => handlePlay(agent.id)}
+                  >
+                    <div className="flex items-start gap-4">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-tint">
+                        <agent.icon className="h-5 w-5 text-brand-ink" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1 flex items-center justify-between gap-2">
+                          <h3 className="font-display text-base font-semibold text-ink">{agent.name}</h3>
+                          <MkBadge variant="neutral">{agent.role}</MkBadge>
+                        </div>
+                        <p className="mb-3 text-sm leading-relaxed text-ink-2">{agent.description}</p>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-brand-ink">
+                          {playing ? (
+                            <>
+                              <Pause className="h-3 w-3" /> Pause demo
+                            </>
+                          ) : (
+                            <>
+                              <Play className="h-3 w-3" /> Play demo
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedSection>
+              )
+            })}
+
+            <AnimatedSection delay={0.4}>
+              <Card tone="paper-2" padding="md" className="mt-6 text-center">
+                <p className="mb-4 text-sm text-ink-2">Want to build your own custom agent?</p>
+                <MkButton asChild variant="primary" size="lg" className="w-full">
+                  <Link to="/register">Sign up free</Link>
+                </MkButton>
+              </Card>
             </AnimatedSection>
           </div>
         </div>
-      </main>
-    </div>
+      </Container>
+    </Section>
   )
 }

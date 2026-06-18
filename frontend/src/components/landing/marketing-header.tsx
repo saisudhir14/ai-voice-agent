@@ -12,9 +12,7 @@ type NavLink = { label: string; to?: string; href?: string }
 const navLinks: NavLink[] = [
   { label: 'Platform', href: '/#platform' },
   { label: 'Solutions', to: '/solutions' },
-  { label: 'Customers', href: '/#customers' },
-  { label: 'Pricing', href: '#' },
-  { label: 'Docs', href: '#' },
+  { label: 'Use cases', href: '/#use-cases' },
 ]
 
 function NavItem({ link, onClick, className }: { link: NavLink; onClick?: () => void; className?: string }) {
