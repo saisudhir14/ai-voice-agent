@@ -1,6 +1,7 @@
-import { createRootRoute, Outlet, Link, useNavigate } from '@tanstack/react-router'
+import { createRootRoute, Outlet, Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
-import { Mic, LayoutDashboard, Bot, MessageSquare, LogOut, Menu } from 'lucide-react'
+import { LayoutDashboard, Bot, MessageSquare, LogOut, Menu, Terminal } from 'lucide-react'
+import { VoiceIcon } from '@/components/shared/voice-icon'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -25,6 +26,12 @@ function RootLayout() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const navigate = useNavigate()
   const [sheetOpen, setSheetOpen] = useState(false)
+  const location = useRouterState({ select: (s) => s.location })
+  const isConsole = location.pathname.startsWith('/console')
+
+  if (isConsole) {
+    return <Outlet />
+  }
 
   const handleLogout = () => {
     logout()
@@ -40,11 +47,9 @@ function RootLayout() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
-                <Mic className="h-5 w-5 text-white" />
-              </div>
+              <VoiceIcon className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
               <span className="text-xl font-display font-bold tracking-tight text-white">
-                VoiceAI<span className="text-cyan-400">.</span>
+                VoiceAI<span className="text-slate-400">.</span>
               </span>
             </Link>
 
@@ -68,13 +73,19 @@ function RootLayout() {
                   </div>
                   
                   <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                    <Button variant="ghost" size="sm" asChild className="rounded-full hover:bg-white/10 hover:text-white text-slate-400 gap-1.5">
+                      <Link to="/console/dashboard">
+                        <Terminal className="h-3.5 w-3.5" />
+                        Console
+                      </Link>
+                    </Button>
                     <div className="flex flex-col items-end mr-2">
                       <span className="text-xs font-medium text-white">{user?.name}</span>
                       <span className="text-[10px] text-slate-500 uppercase tracking-widest">Pro Member</span>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={handleLogout}
                       className="rounded-full hover:bg-red-500/10 hover:text-red-400 transition-colors"
                     >
@@ -104,9 +115,7 @@ function RootLayout() {
               <SheetContent side="right" className="bg-nebula-deep border-white/5 text-slate-200">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-3 text-white">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-400 to-orange-500 flex items-center justify-center">
-                      <Mic className="h-4 w-4 text-white" />
-                    </div>
+                    <VoiceIcon className="h-8 w-8 text-white" />
                     VoiceAI
                   </SheetTitle>
                 </SheetHeader>
@@ -128,6 +137,17 @@ function RootLayout() {
                         </Button>
                       ))}
                       <div className="mt-auto pt-8 border-t border-white/5">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start rounded-xl h-14 text-lg text-slate-400"
+                          asChild
+                          onClick={() => setSheetOpen(false)}
+                        >
+                          <Link to="/console/dashboard">
+                            <Terminal className="h-5 w-5 mr-3" />
+                            Console
+                          </Link>
+                        </Button>
                         <div className="px-4 py-4 mb-4 bg-white/5 rounded-2xl">
                           <div className="text-sm font-bold text-white">{user?.name}</div>
                           <div className="text-xs text-slate-500">{user?.email}</div>
